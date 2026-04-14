@@ -334,12 +334,24 @@
     </div>
 
     <div class="client-id-row">
-      <input type="text" id="clientIdInput" placeholder="Paste Client ID (ends in .apps.googleusercontent.com)" />
+      <input type="text" id="clientIdInput" placeholder="Paste Google OAuth Client ID (ends in .apps.googleusercontent.com)" />
       <button class="btn btn-info" id="connectBtn" onclick="connectGmail()">Connect Gmail</button>
     </div>
     <div class="auth-status" id="authStatus">
       <span class="auth-dot" id="authDot"></span>
       <span id="authMsg">Not connected — enter Client ID and click Connect Gmail</span>
+    </div>
+
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--info-border)">
+      <p style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--info);margin-bottom:10px">Groq API Key <span style="font-weight:400;font-family:'DM Sans',sans-serif;color:#2a3a70">(free at console.groq.com — used for email generation)</span></p>
+      <div class="client-id-row">
+        <input type="password" id="groqKeyInput" placeholder="Paste Groq API key (starts with gsk_...)" />
+        <button class="btn btn-info" onclick="saveGroqKey()">Save Key</button>
+      </div>
+      <div class="auth-status" id="groqStatus">
+        <span class="auth-dot" id="groqDot"></span>
+        <span id="groqMsg">No API key saved — paste your Groq key and click Save Key</span>
+      </div>
     </div>
   </div>
 
@@ -379,7 +391,7 @@
       <button class="btn-toggle" id="toggleCSV" onclick="switchMode('csv')">📋 CSV Import</button>
     </div>
     <div id="manualMode">
-      <label class="field-label">One per line — First Last, email@company.com &nbsp;or&nbsp; Firstname, email@company.com</label>
+      <label class="field-label">One per line — First Last, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="23464e424a4f63404c4e53424d5a0d404c4e">[email&#160;protected]</a> &nbsp;or&nbsp; Firstname, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="553038343c3915363a3825343b2c7b363a38">[email&#160;protected]</a></label>
       <textarea id="recipientsInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
     </div>
     <div id="csvMode" style="display:none">
@@ -445,7 +457,7 @@
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 /* ── STATE ── */
 let resumeFile       = null;
 let parsedRecipients = [];
@@ -500,6 +512,27 @@ function setAuthStatus(state, msg) {
   const el  = document.getElementById('authStatus');
   const dot = document.getElementById('authDot');
   document.getElementById('authMsg').textContent = msg;
+  el.className  = 'auth-status' + (state === 'connected' ? ' connected' : state === 'err' ? ' err' : '');
+  dot.className = 'auth-dot'    + (state === 'connected' ? ' on'        : state === 'err' ? ' err' : '');
+}
+
+/* ── GROQ API KEY ── */
+let groqApiKey = '';
+
+function saveGroqKey() {
+  const key = document.getElementById('groqKeyInput').value.trim();
+  if (!key || !key.startsWith('gsk_')) {
+    setGroqStatus('err', '⚠ Invalid key — it should start with gsk_');
+    return;
+  }
+  groqApiKey = key;
+  setGroqStatus('connected', '✓ Groq API key saved — email generation ready');
+}
+
+function setGroqStatus(state, msg) {
+  const el  = document.getElementById('groqStatus');
+  const dot = document.getElementById('groqDot');
+  document.getElementById('groqMsg').textContent = msg;
   el.className  = 'auth-status' + (state === 'connected' ? ' connected' : state === 'err' ? ' err' : '');
   dot.className = 'auth-dot'    + (state === 'connected' ? ' on'        : state === 'err' ? ' err' : '');
 }
@@ -606,6 +639,7 @@ async function generateEmail() {
   }
   if (!jd)                      { showStatus('genStatus', 'err', '⚠ Paste a job description first.'); return; }
   if (!parsedRecipients.length) { showStatus('genStatus', 'err', '⚠ No valid recipients found.'); return; }
+  if (!groqApiKey)              { showStatus('genStatus', 'err', '⚠ Save your Groq API key in the setup section above.'); return; }
 
   showStatus('genStatus', 'loading', '⟳ Generating email...');
   document.getElementById('generateBtn').disabled = true;
@@ -632,17 +666,27 @@ linkedin.com/in/aaron-aberasturia
 No em dashes. No filler. Nothing after the LinkedIn URL.
 Subject: "Application Follow-Up – [Role Title] at [Company]"
 
-Return ONLY valid JSON: {"subject": "...", "body": "..."}`;
+Return ONLY valid JSON with no markdown, no backticks, no explanation: {"subject": "...", "body": "..."}`;
 
   try {
-    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + groqApiKey
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 1000,
+        messages: [
+          { role: 'system', content: 'You are an email writing assistant. Always respond with only valid JSON, no markdown, no backticks.' },
+          { role: 'user', content: prompt }
+        ]
+      })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
-    const raw    = (data.content || []).find(b => b.type === 'text')?.text || '';
+    const raw    = data.choices?.[0]?.message?.content || '';
     const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
 
     generatedSubject = parsed.subject;
@@ -822,14 +866,4 @@ function toB64(file) {
 function setBadge(i, cls, text) {
   const el = document.getElementById(`badge-${i}`);
   if (!el) return;
-  el.className = `badge badge-${cls}`; el.textContent = text;
-}
-function showStatus(id, type, msg) {
-  const el = document.getElementById(id);
-  el.className = `status-line visible ${type}`; el.textContent = msg;
-}
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-</script>
-</body>
-</html>
+  el.className = `badge ba
