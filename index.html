@@ -9,185 +9,145 @@
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
   :root {
-    --bg: #f5f3ee;
-    --surface: #fff;
-    --surface2: #f0ede6;
-    --border: #e0dbd0;
-    --border-strong: #c8c0b0;
-    --accent: #1a3a2a;
-    --accent2: #2d6a4a;
-    --accent-light: #e8f4ee;
-    --text: #1a1a16;
-    --text2: #5a5a50;
-    --text3: #9a9a8a;
-    --err: #c0392b;
-    --err-bg: #fdf2f0;
-    --ok: #1a6b3a;
-    --ok-bg: #edf7f1;
-    --warn: #7a5000;
-    --warn-bg: #fef9ed;
-    --info: #3050b8;
-    --info-bg: #eef2ff;
-    --info-border: #c0ccf8;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+    --bg:#f5f3ee; --surface:#fff; --surface2:#f0ede6;
+    --border:#e0dbd0; --border-strong:#c8c0b0;
+    --accent:#1a3a2a; --accent2:#2d6a4a; --accent-light:#e8f4ee;
+    --text:#1a1a16; --text2:#5a5a50; --text3:#9a9a8a;
+    --err:#c0392b; --err-bg:#fdf2f0;
+    --ok:#1a6b3a; --ok-bg:#edf7f1;
+    --warn:#7a5000; --warn-bg:#fef9ed;
+    --info:#3050b8; --info-bg:#eef2ff; --info-border:#c0ccf8;
+    --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+    --shadow-md:0 2px 8px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-weight: 400;
-    min-height: 100vh; padding: 48px 24px 80px;
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding:48px 24px 80px}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23a09880' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
+  .wrap{max-width:820px;margin:0 auto;position:relative;z-index:1}
+
+  .header{margin-bottom:44px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header h1{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;color:var(--accent);letter-spacing:-1px;line-height:1}
+  .header p{font-size:14px;color:var(--text3);margin-top:7px;font-style:italic}
+  .badge-pill{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:40px}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:28px 32px;margin-bottom:16px;animation:fadeUp .35s ease both}
+  .setup-card{background:var(--info-bg);border:1.5px solid var(--info-border);border-radius:16px;padding:28px 32px;margin-bottom:16px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .card-header{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .step-num{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .card-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;color:var(--text)}
+  .card-hint{font-size:13px;color:var(--text3);margin-left:auto;font-style:italic}
+
+  .setup-card h2{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--info);margin-bottom:18px}
+  .setup-steps{display:flex;flex-direction:column;gap:12px;counter-reset:s}
+  .setup-step{display:flex;gap:14px;align-items:flex-start;counter-increment:s}
+  .setup-step::before{content:counter(s);background:var(--info);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .setup-step p{font-size:13px;color:#2a3a70;line-height:1.7}
+  .setup-step code{background:#dde4f8;color:var(--info);font-family:monospace;font-size:12px;padding:1px 6px;border-radius:4px}
+  .setup-step a{color:var(--info);font-weight:500}
+  .setup-step strong{color:#1a2870}
+  .setup-divider{border:none;border-top:1px solid var(--info-border);margin:20px 0}
+
+  .input-row{display:flex;gap:10px;align-items:stretch;margin-top:10px}
+  .input-row input{flex:1;background:#fff;border:1.5px solid var(--info-border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 16px;border-radius:10px;outline:none;transition:border-color .2s,box-shadow .2s}
+  .input-row input[type="password"]{letter-spacing:2px}
+  .input-row input:focus{border-color:var(--info);box-shadow:0 0 0 3px rgba(48,80,184,.12)}
+  .input-row input::placeholder{color:var(--text3);font-size:13px;letter-spacing:0}
+
+  .status-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;font-size:13px;margin-top:10px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);transition:all .2s}
+  .status-row.ok{background:var(--ok-bg);border-color:#a8d5b8;color:var(--ok)}
+  .status-row.err{background:var(--err-bg);border-color:#f0b8b0;color:var(--err)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:all .2s}
+  .dot.on{background:var(--ok);box-shadow:0 0 0 3px rgba(26,107,58,.2)}
+  .dot.err{background:var(--err)}
+
+  .lbl{display:block;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:8px}
+
+  textarea.field-input, input[type="datetime-local"] {
+    width:100%;background:var(--surface2);border:1.5px solid var(--border);
+    color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+    padding:12px 16px;border-radius:10px;resize:vertical;outline:none;
+    transition:border-color .2s,box-shadow .2s,background .2s;line-height:1.6;
   }
-  body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23a09880' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
-  }
-  .wrap { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+  textarea.field-input:focus, input[type="datetime-local"]:focus{border-color:var(--accent2);background:#fff;box-shadow:0 0 0 3px rgba(45,106,74,.1)}
+  textarea.field-input::placeholder{color:var(--text3)}
 
-  /* HEADER */
-  .header { margin-bottom: 44px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .header h1 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700; color: var(--accent); letter-spacing: -1px; line-height: 1; }
-  .header p { font-size: 14px; color: var(--text3); margin-top: 7px; font-style: italic; }
-  .badge-pill { background: var(--accent); color: #fff; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 14px; border-radius: 40px; }
+  .file-zone{background:var(--surface2);border:2px dashed var(--border-strong);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;position:relative;transition:all .2s}
+  .file-zone:hover,.file-zone.over{border-color:var(--accent2);background:var(--accent-light)}
+  .file-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .file-icon{font-size:28px;margin-bottom:8px;display:block}
+  .file-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--ok);margin-top:6px;display:none}
 
-  /* CARDS */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 16px; animation: fadeUp 0.35s ease both; }
-  .setup-card { background: var(--info-bg); border: 1.5px solid var(--info-border); border-radius: 16px; padding: 28px 32px; margin-bottom: 16px; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  .btn{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;border-radius:8px;padding:11px 22px;transition:all .15s;letter-spacing:.2px;display:inline-flex;align-items:center;gap:7px}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+  .btn-green{background:var(--accent);color:#fff}
+  .btn-green:hover:not(:disabled){background:var(--accent2);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .btn-send{background:var(--ok);color:#fff}
+  .btn-send:hover:not(:disabled){background:#1f7a42;box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border-strong)}
+  .btn-ghost:hover{background:var(--surface2)}
+  .btn-blue{background:var(--info);color:#fff}
+  .btn-blue:hover:not(:disabled){background:#3a5fd8;box-shadow:var(--shadow-md);transform:translateY(-1px)}
 
-  .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
-  .step-num { background: var(--accent); color: #fff; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
-  .card-hint { font-size: 13px; color: var(--text3); margin-left: auto; font-style: italic; }
+  .toggle-group{display:flex;gap:8px;margin-bottom:18px}
+  .btn-tab{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);padding:9px 20px;border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+  .btn-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-  /* SETUP */
-  .setup-card h2 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--info); margin-bottom: 18px; }
-  .setup-steps { display: flex; flex-direction: column; gap: 12px; counter-reset: s; }
-  .setup-step { display: flex; gap: 14px; align-items: flex-start; counter-increment: s; }
-  .setup-step::before { content: counter(s); background: var(--info); color: #fff; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-  .setup-step p { font-size: 13px; color: #2a3a70; line-height: 1.7; }
-  .setup-step code { background: #dde4f8; color: var(--info); font-family: monospace; font-size: 12px; padding: 1px 6px; border-radius: 4px; }
-  .setup-step a { color: var(--info); font-weight: 500; }
-  .setup-step strong { color: #1a2870; }
-  .setup-divider { border: none; border-top: 1px solid var(--info-border); margin: 20px 0; }
+  .csv-zone{background:var(--surface2);border:2px dashed var(--border-strong);border-radius:12px;padding:22px;text-align:center;cursor:pointer;position:relative;transition:all .2s}
+  .csv-zone:hover,.csv-zone.over{border-color:var(--accent2);background:var(--accent-light)}
+  .csv-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 
-  /* INPUT ROWS */
-  .input-row { display: flex; gap: 10px; align-items: stretch; margin-top: 10px; }
-  .input-row input {
-    flex: 1; background: #fff; border: 1.5px solid var(--info-border);
-    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-    padding: 11px 16px; border-radius: 10px; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .input-row input[type="password"] { letter-spacing: 2px; }
-  .input-row input:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(48,80,184,0.12); }
-  .input-row input::placeholder { color: var(--text3); font-size: 13px; letter-spacing: 0; }
+  .rec-list{display:flex;flex-direction:column;gap:6px}
+  .rec-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 16px;font-size:13px;transition:all .2s}
+  .rec-row.sent{background:var(--ok-bg);border-color:#a8d5b8}
+  .rec-row.failed{background:var(--err-bg);border-color:#f0b8b0}
+  .rec-name{font-weight:500}
+  .rec-email{color:var(--text3);font-size:12px;margin-left:8px}
+  .bdg{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+  .bdg-pending{background:var(--surface);border:1px solid var(--border);color:var(--text3)}
+  .bdg-sending{background:var(--warn-bg);border:1px solid #e8c870;color:var(--warn)}
+  .bdg-sent{background:var(--ok-bg);border:1px solid #a8d5b8;color:var(--ok)}
+  .bdg-failed{background:var(--err-bg);border:1px solid #f0b8b0;color:var(--err)}
+  .bdg-scheduled{background:var(--info-bg);border:1px solid var(--info-border);color:var(--info)}
 
-  /* STATUS ROWS */
-  .status-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px; font-size: 13px; margin-top: 10px; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text2); transition: all 0.2s; }
-  .status-row.ok  { background: var(--ok-bg);  border-color: #a8d5b8; color: var(--ok); }
-  .status-row.err { background: var(--err-bg); border-color: #f0b8b0; color: var(--err); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; transition: all 0.2s; }
-  .dot.on  { background: var(--ok);  box-shadow: 0 0 0 3px rgba(26,107,58,0.2); }
-  .dot.err { background: var(--err); }
+  .preview-subj{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text2);margin-bottom:10px}
+  .preview-subj strong{font-family:'Syne',sans-serif;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text);margin-right:10px}
+  .preview-body{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:20px 22px;font-size:14px;line-height:1.8;color:var(--text);min-height:200px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none;transition:border-color .2s,background .2s}
+  .preview-body:focus{border-color:var(--accent2);background:#fff;box-shadow:0 0 0 3px rgba(45,106,74,.1)}
 
-  /* LABELS */
-  .lbl { display: block; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
+  .notice{background:var(--warn-bg);border:1.5px solid #e8c870;border-radius:8px;padding:12px 16px;font-size:13px;color:var(--warn);line-height:1.6;margin-bottom:16px}
 
-  /* TEXTAREA + DATETIME */
-  textarea, input[type="datetime-local"] {
-    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
-    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-    padding: 12px 16px; border-radius: 10px; resize: vertical; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; line-height: 1.6;
-  }
-  textarea:focus, input[type="datetime-local"]:focus { border-color: var(--accent2); background: #fff; box-shadow: 0 0 0 3px rgba(45,106,74,0.1); }
-  textarea::placeholder { color: var(--text3); }
+  .sline{font-size:13px;margin-top:12px;padding:10px 14px;border-radius:8px;display:none;line-height:1.5}
+  .sline.show{display:block}
+  .sline.loading{background:var(--warn-bg);color:var(--warn)}
+  .sline.ok{background:var(--ok-bg);color:var(--ok)}
+  .sline.err{background:var(--err-bg);color:var(--err)}
 
-  /* FILE ZONE */
-  .file-zone { background: var(--surface2); border: 2px dashed var(--border-strong); border-radius: 12px; padding: 28px 20px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s; }
-  .file-zone:hover, .file-zone.over { border-color: var(--accent2); background: var(--accent-light); }
-  .file-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-  .file-icon { font-size: 28px; margin-bottom: 8px; display: block; }
-  .file-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; color: var(--ok); margin-top: 6px; display: none; }
+  .sched-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px;cursor:pointer;user-select:none}
+  .sched-toggle input{width:16px;height:16px;accent-color:var(--accent2);cursor:pointer}
+  .sched-toggle span{font-size:14px;color:var(--text2)}
+  .sched-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;background:var(--info-bg);border:1.5px solid var(--info-border);border-radius:10px;margin-bottom:16px}
+  .sched-row label{font-size:13px;color:var(--info);font-weight:500;white-space:nowrap}
+  .sched-row input[type="datetime-local"]{flex:1;min-width:200px;background:#fff;border:1.5px solid var(--info-border);color:var(--info);font-size:13px;padding:10px 14px;border-radius:8px;outline:none}
+  .sched-row input[type="datetime-local"]:focus{border-color:var(--info);box-shadow:0 0 0 3px rgba(48,80,184,.12)}
+  .tz{background:var(--info);color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
 
-  /* BUTTONS */
-  .btn { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; border-radius: 8px; padding: 11px 22px; transition: all 0.15s; letter-spacing: 0.2px; display: inline-flex; align-items: center; gap: 7px; }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-  .btn-green { background: var(--accent); color: #fff; }
-  .btn-green:hover:not(:disabled) { background: var(--accent2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
-  .btn-send  { background: var(--ok); color: #fff; }
-  .btn-send:hover:not(:disabled) { background: #1f7a42; box-shadow: var(--shadow-md); transform: translateY(-1px); }
-  .btn-ghost { background: transparent; color: var(--text2); border: 1.5px solid var(--border-strong); }
-  .btn-ghost:hover { background: var(--surface2); }
-  .btn-blue  { background: var(--info); color: #fff; }
-  .btn-blue:hover:not(:disabled) { background: #3a5fd8; box-shadow: var(--shadow-md); transform: translateY(-1px); }
-
-  /* TOGGLE */
-  .toggle-group { display: flex; gap: 8px; margin-bottom: 18px; }
-  .btn-tab { background: var(--surface2); color: var(--text2); border: 1.5px solid var(--border); padding: 9px 20px; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-  .btn-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-  /* CSV ZONE */
-  .csv-zone { background: var(--surface2); border: 2px dashed var(--border-strong); border-radius: 12px; padding: 22px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s; }
-  .csv-zone:hover, .csv-zone.over { border-color: var(--accent2); background: var(--accent-light); }
-  .csv-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-
-  /* RECIPIENT ROWS */
-  .rec-list { display: flex; flex-direction: column; gap: 6px; }
-  .rec-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 16px; font-size: 13px; transition: all 0.2s; }
-  .rec-row.sent   { background: var(--ok-bg);  border-color: #a8d5b8; }
-  .rec-row.failed { background: var(--err-bg); border-color: #f0b8b0; }
-  .rec-name  { font-weight: 500; }
-  .rec-email { color: var(--text3); font-size: 12px; margin-left: 8px; }
-  .bdg { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
-  .bdg-pending   { background: var(--surface); border: 1px solid var(--border); color: var(--text3); }
-  .bdg-sending   { background: var(--warn-bg); border: 1px solid #e8c870; color: var(--warn); }
-  .bdg-sent      { background: var(--ok-bg);   border: 1px solid #a8d5b8; color: var(--ok); }
-  .bdg-failed    { background: var(--err-bg);  border: 1px solid #f0b8b0; color: var(--err); }
-  .bdg-scheduled { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info); }
-
-  /* PREVIEW */
-  .preview-subj { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 16px; font-size: 13px; color: var(--text2); margin-bottom: 10px; }
-  .preview-subj strong { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text); margin-right: 10px; }
-  .preview-body { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 20px 22px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; color: var(--text); min-height: 160px; }
-
-  /* NOTICE */
-  .notice { background: var(--warn-bg); border: 1.5px solid #e8c870; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--warn); line-height: 1.6; margin-bottom: 16px; }
-
-  /* STATUS LINE */
-  .sline { font-size: 13px; margin-top: 12px; padding: 10px 14px; border-radius: 8px; display: none; line-height: 1.5; }
-  .sline.show { display: block; }
-  .sline.loading { background: var(--warn-bg); color: var(--warn); }
-  .sline.ok      { background: var(--ok-bg);   color: var(--ok); }
-  .sline.err     { background: var(--err-bg);  color: var(--err); }
-
-  /* SCHEDULE */
-  .sched-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; cursor: pointer; user-select: none; }
-  .sched-toggle input { width: 16px; height: 16px; accent-color: var(--accent2); cursor: pointer; }
-  .sched-toggle span { font-size: 14px; color: var(--text2); }
-  .sched-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; background: var(--info-bg); border: 1.5px solid var(--info-border); border-radius: 10px; margin-bottom: 16px; }
-  .sched-row label { font-size: 13px; color: var(--info); font-weight: 500; white-space: nowrap; }
-  .sched-row input[type="datetime-local"] { flex: 1; min-width: 200px; background: #fff; border-color: var(--info-border); color: var(--info); font-size: 13px; }
-  .sched-row input[type="datetime-local"]:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(48,80,184,0.12); }
-  .tz { background: var(--info); color: #fff; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
-
-  @media(max-width:600px) { .card, .setup-card { padding: 20px 18px; } body { padding: 28px 14px 60px; } }
+  @media(max-width:600px){.card,.setup-card{padding:20px 18px}body{padding:28px 14px 60px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- HEADER -->
   <div class="header">
     <div>
       <h1>Outreach Tool</h1>
       <p>Aaron Aberasturia — job application emailer</p>
     </div>
-    <div class="badge-pill">v5.0</div>
+    <div class="badge-pill">v5.1</div>
   </div>
 
-  <!-- SETUP CARD -->
+  <!-- SETUP -->
   <div class="setup-card">
     <h2>⚙️ One-Time Setup</h2>
     <div class="setup-steps">
@@ -201,10 +161,9 @@
 
     <hr class="setup-divider">
 
-    <!-- Google Client ID -->
-    <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--info);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Google OAuth Client ID</p>
+    <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--info);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Google OAuth Client ID</p>
     <div class="input-row">
-      <input type="text" id="clientIdInput" placeholder="Paste Client ID (ends in .apps.googleusercontent.com)" />
+      <input type="text" id="clientIdInput" placeholder="Paste Client ID (ends in .apps.googleusercontent.com)">
       <button class="btn btn-blue" id="connectBtn" onclick="connectGmail()">Connect Gmail</button>
     </div>
     <div class="status-row" id="gmailStatus">
@@ -214,10 +173,9 @@
 
     <hr class="setup-divider">
 
-    <!-- Groq API Key -->
-    <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--info);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Groq API Key <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif;color:#5060a0">(free at console.groq.com)</span></p>
+    <p style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--info);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Groq API Key <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'DM Sans',sans-serif;color:#5060a0">(free at console.groq.com)</span></p>
     <div class="input-row">
-      <input type="password" id="groqKeyInput" placeholder="gsk_..." />
+      <input type="password" id="groqKeyInput" placeholder="gsk_...">
       <button class="btn btn-blue" onclick="saveGroqKey()">Save Key</button>
     </div>
     <div class="status-row" id="groqStatus">
@@ -226,7 +184,7 @@
     </div>
   </div>
 
-  <!-- STEP 1: RESUME -->
+  <!-- STEP 1 -->
   <div class="card">
     <div class="card-header">
       <div class="step-num">1</div>
@@ -241,17 +199,17 @@
     </div>
   </div>
 
-  <!-- STEP 2: JD -->
+  <!-- STEP 2 -->
   <div class="card">
     <div class="card-header">
       <div class="step-num">2</div>
       <div class="card-title">Job Description</div>
       <div class="card-hint">Paste the full JD</div>
     </div>
-    <textarea id="jdInput" rows="7" placeholder="Paste the job description here..."></textarea>
+    <textarea class="field-input" id="jdInput" rows="7" placeholder="Paste the job description here..."></textarea>
   </div>
 
-  <!-- STEP 3: RECIPIENTS -->
+  <!-- STEP 3 -->
   <div class="card">
     <div class="card-header">
       <div class="step-num">3</div>
@@ -262,8 +220,8 @@
       <button class="btn-tab" id="tabCSV" onclick="switchMode('csv')">📋 CSV Import</button>
     </div>
     <div id="manualMode">
-      <label class="lbl">One per line — First Last, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8aefe7ebe3e6cae9e5e7faebe4f3a4e9e5e7">[email&#160;protected]</a></label>
-      <textarea id="manualInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
+      <label class="lbl">One per line — First Last, email@company.com</label>
+      <textarea class="field-input" id="manualInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
     </div>
     <div id="csvMode" style="display:none">
       <label class="lbl">Apollo CSV — columns: First Name, Email</label>
@@ -277,7 +235,7 @@
     <div class="rec-list" id="recipPreview" style="margin-top:14px"></div>
   </div>
 
-  <!-- STEP 4: GENERATE -->
+  <!-- STEP 4 -->
   <div class="card">
     <div class="card-header">
       <div class="step-num">4</div>
@@ -288,20 +246,20 @@
     <div class="sline" id="genStatus"></div>
   </div>
 
-  <!-- STEP 5: PREVIEW -->
+  <!-- STEP 5 -->
   <div class="card" id="previewCard" style="display:none">
     <div class="card-header">
       <div class="step-num">5</div>
-      <div class="card-title">Preview</div>
+      <div class="card-title">Preview <span style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text3);margin-left:6px">— editable</span></div>
     </div>
     <div class="preview-subj"><strong>Subject</strong><span id="subjectText"></span></div>
-    <textarea class="preview-body" id="bodyText" rows="14" oninput="syncEditedBody()" style="resize:vertical;font-family:'DM Sans',sans-serif;"></textarea>
+    <textarea class="preview-body" id="bodyText" spellcheck="true"></textarea>
     <div style="margin-top:14px;display:flex;gap:10px">
       <button class="btn btn-ghost" onclick="generateEmail()">↺ Regenerate</button>
     </div>
   </div>
 
-  <!-- STEP 6: SEND -->
+  <!-- STEP 6 -->
   <div class="card" id="sendCard" style="display:none">
     <div class="card-header">
       <div class="step-num">6</div>
@@ -327,44 +285,43 @@
   </div>
 
 </div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
-// ── STATE ──────────────────────────────────────────────
-let resumeFile       = null;
-let recipients       = [];
-let genSubject       = '';
-let genBody          = ''; // uses [NAME] placeholder
-let mode             = 'manual';
-let gmailToken       = null;
-let groqKey          = '';
-let tokenClient      = null;
-let schedTimers      = [];
+<script>
+var resumeFile  = null;
+var recipients  = [];
+var genSubject  = '';
+var genBody     = '';
+var mode        = 'manual';
+var gmailToken  = null;
+var groqKey     = '';
+var tokenClient = null;
+var schedTimers = [];
 
-// ── INIT (runs after DOM is ready) ────────────────────
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function() {
+  var rZone  = document.getElementById('resumeZone');
+  var rInput = document.getElementById('resumeInput');
+  rInput.addEventListener('change', function(e) { if (e.target.files[0]) setResume(e.target.files[0]); });
+  rZone.addEventListener('dragover',  function(e) { e.preventDefault(); rZone.classList.add('over'); });
+  rZone.addEventListener('dragleave', function()  { rZone.classList.remove('over'); });
+  rZone.addEventListener('drop', function(e) { e.preventDefault(); rZone.classList.remove('over'); if (e.dataTransfer.files[0]) setResume(e.dataTransfer.files[0]); });
 
-  // Resume upload
-  const rZone  = document.getElementById('resumeZone');
-  const rInput = document.getElementById('resumeInput');
-  rInput.addEventListener('change', e => { if (e.target.files[0]) setResume(e.target.files[0]); });
-  rZone.addEventListener('dragover',  e => { e.preventDefault(); rZone.classList.add('over'); });
-  rZone.addEventListener('dragleave', () => rZone.classList.remove('over'));
-  rZone.addEventListener('drop', e => { e.preventDefault(); rZone.classList.remove('over'); if (e.dataTransfer.files[0]) setResume(e.dataTransfer.files[0]); });
+  var cZone  = document.getElementById('csvZone');
+  var cInput = document.getElementById('csvInput');
+  cInput.addEventListener('change', function(e) { if (e.target.files[0]) loadCSV(e.target.files[0]); });
+  cZone.addEventListener('dragover',  function(e) { e.preventDefault(); cZone.classList.add('over'); });
+  cZone.addEventListener('dragleave', function()  { cZone.classList.remove('over'); });
+  cZone.addEventListener('drop', function(e) { e.preventDefault(); cZone.classList.remove('over'); if (e.dataTransfer.files[0]) loadCSV(e.dataTransfer.files[0]); });
 
-  // CSV upload
-  const cZone  = document.getElementById('csvZone');
-  const cInput = document.getElementById('csvInput');
-  cInput.addEventListener('change', e => { if (e.target.files[0]) loadCSV(e.target.files[0]); });
-  cZone.addEventListener('dragover',  e => { e.preventDefault(); cZone.classList.add('over'); });
-  cZone.addEventListener('dragleave', () => cZone.classList.remove('over'));
-  cZone.addEventListener('drop', e => { e.preventDefault(); cZone.classList.remove('over'); if (e.dataTransfer.files[0]) loadCSV(e.dataTransfer.files[0]); });
-
+  var bodyTA = document.getElementById('bodyText');
+  bodyTA.addEventListener('input', function() {
+    var firstName = recipients.length ? recipients[0].firstName : '';
+    genBody = bodyTA.value.replace(new RegExp('Hi ' + escRx(firstName) + ',', 'g'), 'Hi [NAME],');
+  });
 });
 
-// ── GMAIL OAUTH ────────────────────────────────────────
 function connectGmail() {
-  const id = document.getElementById('clientIdInput').value.trim();
+  var id = document.getElementById('clientIdInput').value.trim();
   if (!id || !id.includes('.apps.googleusercontent.com')) {
-    setStatus('gmail', 'err', '⚠ Invalid Client ID — should end in .apps.googleusercontent.com');
+    setStatus('gmail', 'err', '⚠ Invalid Client ID');
     return;
   }
   if (typeof google === 'undefined' || !google.accounts) {
@@ -375,20 +332,19 @@ function connectGmail() {
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: id,
     scope: 'https://www.googleapis.com/auth/gmail.send',
-    callback: r => {
+    callback: function(r) {
       if (r.error) { setStatus('gmail', 'err', 'Auth failed: ' + r.error); return; }
       gmailToken = r.access_token;
       setStatus('gmail', 'ok', '✓ Gmail connected — ready to send');
       document.getElementById('connectBtn').textContent = '✓ Reconnect';
     },
-    error_callback: e => setStatus('gmail', 'err', 'Error: ' + (e.message || e.type || 'unknown'))
+    error_callback: function(e) { setStatus('gmail', 'err', 'Error: ' + (e.message || e.type || 'unknown')); }
   });
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
-// ── GROQ KEY ───────────────────────────────────────────
 function saveGroqKey() {
-  const key = document.getElementById('groqKeyInput').value.trim();
+  var key = document.getElementById('groqKeyInput').value.trim();
   if (!key || !key.startsWith('gsk_')) {
     setStatus('groq', 'err', '⚠ Invalid key — should start with gsk_');
     return;
@@ -397,27 +353,24 @@ function saveGroqKey() {
   setStatus('groq', 'ok', '✓ Groq key saved — email generation ready');
 }
 
-// ── STATUS HELPER ──────────────────────────────────────
 function setStatus(which, state, msg) {
-  const el  = document.getElementById(which + 'Status');
-  const dot = document.getElementById(which + 'Dot');
-  const txt = document.getElementById(which + 'Msg');
+  var el  = document.getElementById(which + 'Status');
+  var dot = document.getElementById(which + 'Dot');
+  var txt = document.getElementById(which + 'Msg');
   txt.textContent = msg;
   el.className  = 'status-row' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
   dot.className = 'dot'        + (state === 'ok' ? ' on' : state === 'err' ? ' err' : '');
 }
 
-// ── RESUME ─────────────────────────────────────────────
 function setResume(file) {
   resumeFile = file;
   document.getElementById('resumeIcon').textContent = '✅';
   document.getElementById('resumeLabel').textContent = 'Resume loaded';
-  const n = document.getElementById('resumeName');
+  var n = document.getElementById('resumeName');
   n.textContent = '📎 ' + file.name;
   n.style.display = 'block';
 }
 
-// ── MODE TOGGLE ────────────────────────────────────────
 function switchMode(m) {
   mode = m;
   document.getElementById('manualMode').style.display = m === 'manual' ? 'block' : 'none';
@@ -428,26 +381,25 @@ function switchMode(m) {
   recipients = [];
 }
 
-// ── CSV ────────────────────────────────────────────────
 function loadCSV(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const lines = e.target.result.trim().split('\n');
-    const h = lines[0].toLowerCase();
-    const data = (h.includes('first') || h.includes('email')) ? lines.slice(1) : lines;
-    const seen = new Set(); const out = []; let dups = 0;
-    for (const line of data) {
-      const p = line.trim().split(',').map(x => x.trim().replace(/^"|"$/g, ''));
-      const fn = p[0]; const em = p[1];
-      if (!fn || !em || !em.includes('@')) continue;
-      const k = em.toLowerCase();
-      if (seen.has(k)) { dups++; continue; }
-      seen.add(k);
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var lines = e.target.result.trim().split('\n');
+    var h = lines[0].toLowerCase();
+    var data = (h.includes('first') || h.includes('email')) ? lines.slice(1) : lines;
+    var seen = {}; var out = []; var dups = 0;
+    for (var i = 0; i < data.length; i++) {
+      var p = data[i].trim().split(',').map(function(x) { return x.trim().replace(/^"|"$/g, ''); });
+      var fn = p[0]; var em = p[1];
+      if (!fn || !em || em.indexOf('@') === -1) continue;
+      var k = em.toLowerCase();
+      if (seen[k]) { dups++; continue; }
+      seen[k] = true;
       out.push({ firstName: fn, fullName: fn, email: em });
     }
     recipients = out;
-    const n = document.getElementById('csvName');
-    n.textContent = `✅ ${file.name} — ${out.length} loaded${dups ? ` (${dups} dupes removed)` : ''}`;
+    var n = document.getElementById('csvName');
+    n.textContent = '✅ ' + file.name + ' — ' + out.length + ' loaded' + (dups ? ' (' + dups + ' dupes removed)' : '');
     n.style.display = 'block';
     document.getElementById('csvLabel').style.display = 'none';
     renderPreview();
@@ -455,82 +407,52 @@ function loadCSV(file) {
   reader.readAsText(file);
 }
 
-// ── PARSE MANUAL ──────────────────────────────────────
 function parseManual(raw) {
-  const seen = new Set();
-  return raw.trim().split('\n').map(l => l.trim()).filter(Boolean).map(line => {
-    const ci = line.indexOf(',');
+  var seen = {};
+  return raw.trim().split('\n').map(function(l) { return l.trim(); }).filter(Boolean).map(function(line) {
+    var ci = line.indexOf(',');
     if (ci === -1) return null;
-    const name  = line.slice(0, ci).trim();
-    const email = line.slice(ci + 1).trim();
-    if (!email.includes('@')) return null;
-    return { firstName: name.split(' ')[0], fullName: name, email };
-  }).filter(r => {
+    var name  = line.slice(0, ci).trim();
+    var email = line.slice(ci + 1).trim();
+    if (email.indexOf('@') === -1) return null;
+    return { firstName: name.split(' ')[0], fullName: name, email: email };
+  }).filter(function(r) {
     if (!r) return false;
-    const k = r.email.toLowerCase();
-    if (seen.has(k)) return false;
-    seen.add(k); return true;
+    var k = r.email.toLowerCase();
+    if (seen[k]) return false;
+    seen[k] = true; return true;
   });
 }
 
 function renderPreview() {
-  const el = document.getElementById('recipPreview');
+  var el = document.getElementById('recipPreview');
   if (!recipients.length) { el.innerHTML = ''; return; }
-  el.innerHTML = recipients.slice(0, 5).map(r =>
-    `<div class="rec-row">
-      <span><span class="rec-name">${r.firstName}</span><span class="rec-email">${r.email}</span></span>
-      <span class="bdg bdg-pending">ready</span>
-    </div>`
-  ).join('') + (recipients.length > 5
-    ? `<div style="font-size:12px;color:var(--text3);padding:6px 4px">+${recipients.length - 5} more...</div>` : '');
+  var html = recipients.slice(0, 5).map(function(r) {
+    return '<div class="rec-row"><span><span class="rec-name">' + r.firstName + '</span><span class="rec-email">' + r.email + '</span></span><span class="bdg bdg-pending">ready</span></div>';
+  }).join('');
+  if (recipients.length > 5) html += '<div style="font-size:12px;color:var(--text3);padding:6px 4px">+' + (recipients.length - 5) + ' more...</div>';
+  el.innerHTML = html;
 }
 
-// ── GENERATE ──────────────────────────────────────────
 async function generateEmail() {
-  const jd = document.getElementById('jdInput').value.trim();
+  var jd = document.getElementById('jdInput').value.trim();
   if (mode === 'manual') {
-    const raw = document.getElementById('manualInput').value.trim();
+    var raw = document.getElementById('manualInput').value.trim();
     if (!raw) { showLine('genStatus', 'err', '⚠ Add at least one recipient.'); return; }
     recipients = parseManual(raw);
   }
-  if (!jd)               { showLine('genStatus', 'err', '⚠ Paste a job description first.'); return; }
-  if (!recipients.length){ showLine('genStatus', 'err', '⚠ No valid recipients found.'); return; }
-  if (!groqKey)          { showLine('genStatus', 'err', '⚠ Save your Groq API key in the setup section above.'); return; }
+  if (!jd)                { showLine('genStatus', 'err', '⚠ Paste a job description first.'); return; }
+  if (!recipients.length) { showLine('genStatus', 'err', '⚠ No valid recipients found.'); return; }
+  if (!groqKey)           { showLine('genStatus', 'err', '⚠ Save your Groq API key in the setup section above.'); return; }
 
   showLine('genStatus', 'loading', '⟳ Generating email...');
   document.getElementById('generateBtn').disabled = true;
 
-  const name = recipients[0].firstName;
-  const prompt = `You are helping Aaron Aberasturia write a cold outreach email to a recruiter after applying for a job.
-
-Job description:
----
-${jd}
----
-
-Write a SHORT professional cold outreach email. Rules:
-- Greeting: "Hi ${name},"
-- Then a blank line
-- Paragraph 1: One sentence — Aaron recently applied for [exact role title] and wanted to reach out. Use the exact role title and company from the JD.
-- Then a blank line
-- Paragraph 2: 1-2 sentences. Aaron is a CS student graduating May 2026. Mention 2-3 specific skills/technologies from the JD. No fluff.
-- Then a blank line
-- Paragraph 3: One sentence on why he's specifically interested — reference something concrete from the JD.
-- Then a blank line
-- "I'd appreciate the opportunity to be considered and would love to connect."
-- Then a blank line
-- Closing — these three lines with NO blank lines between them:
-Best,
-Aaron Aberasturia
-linkedin.com/in/aaron-aberasturia
-
-Rules: No em dashes. No filler. Nothing after the LinkedIn URL.
-Subject line format: "Application Follow-Up – [Role Title] at [Company]"
-
-Return ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}`;
+  var name = recipients[0].firstName;
+  var prompt = 'You are helping Aaron Aberasturia write a cold outreach email to a recruiter after applying for a job.\n\nJob description:\n---\n' + jd + '\n---\n\nWrite a SHORT professional cold outreach email with this exact structure and spacing:\n\nLine 1: "Hi ' + name + ',"\nBlank line\nParagraph 1: One sentence — Aaron recently applied for [exact role title] at [company] and wanted to reach out.\nBlank line\nParagraph 2: 1-2 sentences. Aaron is a CS student graduating May 2026. Mention 2-3 specific skills/technologies from the JD. No fluff.\nBlank line\nParagraph 3: One sentence on why he is specifically interested — reference something concrete from the JD.\nBlank line\n"I\'d appreciate the opportunity to be considered and would love to connect."\nBlank line\nThen these 3 lines with NO blank lines between them:\nBest,\nAaron Aberasturia\nlinkedin.com/in/aaron-aberasturia\n\nRules: No em dashes. No filler phrases. Nothing after the LinkedIn URL.\nSubject line: "Application Follow-Up – [Role Title] at [Company]"\n\nReturn ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}';
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    var res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + groqKey },
       body: JSON.stringify({
@@ -542,23 +464,24 @@ Return ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": ".
         ]
       })
     });
-    const data = await res.json();
+    var data = await res.json();
     if (data.error) throw new Error(data.error.message);
-    const raw    = data.choices?.[0]?.message?.content || '';
-    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    var raw2   = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ? data.choices[0].message.content : '';
+    var parsed = JSON.parse(raw2.replace(/```json|```/g, '').trim());
 
     genSubject = parsed.subject;
-    genBody    = parsed.body.replace(new RegExp(`Hi ${escRx(name)},`, 'g'), 'Hi [NAME],');
+    genBody    = parsed.body.replace(new RegExp('Hi ' + escRx(name) + ',', 'g'), 'Hi [NAME],');
 
     document.getElementById('subjectText').textContent = genSubject;
-    const ta = document.getElementById('bodyText');
+    var ta = document.getElementById('bodyText');
     ta.value = parsed.body;
     ta.style.height = 'auto';
-    ta.style.height = ta.scrollHeight + 'px';
+    ta.style.height = (ta.scrollHeight + 4) + 'px';
+
     document.getElementById('previewCard').style.display = 'block';
     buildSendList();
     document.getElementById('sendCard').style.display = 'block';
-    showLine('genStatus', 'ok', `✓ Email generated for ${recipients.length} recipient${recipients.length > 1 ? 's' : ''}.`);
+    showLine('genStatus', 'ok', '✓ Email generated for ' + recipients.length + ' recipient' + (recipients.length > 1 ? 's' : '') + '.');
     document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
     showLine('genStatus', 'err', '⚠ Generation failed: ' + err.message);
@@ -567,164 +490,160 @@ Return ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": ".
   document.getElementById('generateBtn').disabled = false;
 }
 
-// ── SYNC EDITS BACK TO genBody ────────────────────────
-function syncEditedBody() {
-  const ta = document.getElementById('bodyText');
-  const firstName = recipients[0]?.firstName || '';
-  // re-derive genBody with [NAME] placeholder from whatever is in the textarea
-  genBody = ta.value.replace(new RegExp(`Hi ${escRx(firstName)},`, 'g'), 'Hi [NAME],');
-}
-
-// ── SEND LIST ─────────────────────────────────────────
 function buildSendList() {
-  document.getElementById('sendList').innerHTML = recipients.map((r, i) => {
-    const last = r.fullName !== r.firstName ? ' ' + r.fullName.split(' ').slice(1).join(' ') : '';
-    return `<div class="rec-row" id="row${i}">
-      <span><span class="rec-name">${r.firstName}${last}</span><span class="rec-email">${r.email}</span></span>
-      <span class="bdg bdg-pending" id="bdg${i}">pending</span>
-    </div>`;
+  var html = recipients.map(function(r, i) {
+    var last = r.fullName !== r.firstName ? ' ' + r.fullName.split(' ').slice(1).join(' ') : '';
+    return '<div class="rec-row" id="row' + i + '"><span><span class="rec-name">' + r.firstName + last + '</span><span class="rec-email">' + r.email + '</span></span><span class="bdg bdg-pending" id="bdg' + i + '">pending</span></div>';
   }).join('');
+  document.getElementById('sendList').innerHTML = html;
 }
 
-// ── SCHEDULE TOGGLE ───────────────────────────────────
 function toggleSched() {
-  const on = document.getElementById('schedCheck').checked;
-  document.getElementById('schedRow').style.display  = on ? 'flex' : 'none';
-  document.getElementById('sendLabel').textContent   = on ? '🕐 Schedule All' : '⚡ Send All';
+  var on = document.getElementById('schedCheck').checked;
+  document.getElementById('schedRow').style.display = on ? 'flex' : 'none';
+  document.getElementById('sendLabel').textContent  = on ? '🕐 Schedule All' : '⚡ Send All';
 }
 
-// ── SEND ALL ──────────────────────────────────────────
 async function sendAll() {
-  if (!gmailToken) { showLine('sendStatus', 'err', '⚠ Connect Gmail first (setup above).'); return; }
-  if (!resumeFile) { showLine('sendStatus', 'err', '⚠ Upload your resume first (step 1).'); return; }
-  if (!genBody)    { showLine('sendStatus', 'err', '⚠ Generate the email first (step 4).'); return; }
+  if (!gmailToken)   { showLine('sendStatus', 'err', '⚠ Connect Gmail first (setup above).'); return; }
+  if (!resumeFile)   { showLine('sendStatus', 'err', '⚠ Upload your resume first (step 1).'); return; }
+  if (!genBody)      { showLine('sendStatus', 'err', '⚠ Generate the email first (step 4).'); return; }
 
   if (document.getElementById('schedCheck').checked) {
-    const val = document.getElementById('schedTime').value;
+    var val = document.getElementById('schedTime').value;
     if (!val) { showLine('sendStatus', 'err', '⚠ Pick a date and time.'); return; }
     doSchedule(val); return;
   }
 
   document.getElementById('sendBtn').disabled = true;
   showLine('sendStatus', 'loading', '⟳ Sending...');
-  const b64 = await toB64(resumeFile);
-  let sent = 0, failed = 0;
+  var b64 = await toB64(resumeFile);
+  var sent = 0; var failed = 0;
 
-  for (let i = 0; i < recipients.length; i++) {
-    const r = recipients[i];
+  for (var i = 0; i < recipients.length; i++) {
+    var r = recipients[i];
     setBdg(i, 'sending', '⟳ sending');
-    const ok = await sendOne(r.email, genSubject, genBody.replace('[NAME]', r.firstName), b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
-    if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById(`row${i}`).classList.add('sent'); sent++; }
-    else    { setBdg(i, 'failed', '✗ failed'); document.getElementById(`row${i}`).classList.add('failed'); failed++; }
+    var body = genBody.replace('[NAME]', r.firstName);
+    var ok = await sendOne(r.email, genSubject, body, b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
+    if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById('row' + i).classList.add('sent'); sent++; }
+    else    { setBdg(i, 'failed', '✗ failed'); document.getElementById('row' + i).classList.add('failed'); failed++; }
     if (i < recipients.length - 1) await sleep(1200);
   }
 
-  showLine('sendStatus', failed && !sent ? 'err' : 'ok', `Done — ${sent} sent${failed ? `, ${failed} failed` : ''}.`);
+  showLine('sendStatus', (failed && !sent) ? 'err' : 'ok', 'Done — ' + sent + ' sent' + (failed ? ', ' + failed + ' failed' : '') + '.');
   document.getElementById('sendBtn').disabled = false;
 }
 
-// ── SCHEDULE ──────────────────────────────────────────
 function doSchedule(localVal) {
-  const isDST   = isEDT(new Date(localVal));
-  const estMin  = isDST ? -4 * 60 : -5 * 60;
-  const ld      = new Date(localVal);
-  const utcMs   = ld.getTime() - ld.getTimezoneOffset() * 60000 - estMin * 60000;
-  const base    = new Date(utcMs);
+  var isDST  = isEDT(new Date(localVal));
+  var estMin = isDST ? -4 * 60 : -5 * 60;
+  var ld     = new Date(localVal);
+  var utcMs  = ld.getTime() - ld.getTimezoneOffset() * 60000 - estMin * 60000;
+  var base   = new Date(utcMs);
   if (base.getTime() <= Date.now()) { showLine('sendStatus', 'err', '⚠ Scheduled time is in the past.'); return; }
 
-  schedTimers.forEach(clearTimeout); schedTimers = [];
+  schedTimers.forEach(function(t) { clearTimeout(t); });
+  schedTimers = [];
   document.getElementById('sendBtn').disabled = true;
-  let done = 0;
+  var done = 0;
 
-  recipients.forEach((r, i) => {
-    const at  = new Date(base.getTime() + i * 60000);
+  recipients.forEach(function(r, i) {
+    var at = new Date(base.getTime() + i * 60000);
     setBdg(i, 'scheduled', '🕐 ' + fmtEST(at));
-    const t = setTimeout(async () => {
+    var t = setTimeout(async function() {
       setBdg(i, 'sending', '⟳ sending');
-      const b64 = await toB64(resumeFile);
-      const ok  = await sendOne(r.email, genSubject, genBody.replace('[NAME]', r.firstName), b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
-      if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById(`row${i}`).classList.add('sent'); }
-      else    { setBdg(i, 'failed', '✗ failed'); document.getElementById(`row${i}`).classList.add('failed'); }
-      if (++done === recipients.length) { document.getElementById('sendBtn').disabled = false; showLine('sendStatus', 'ok', '✓ All scheduled emails sent.'); }
+      var b64 = await toB64(resumeFile);
+      var body = genBody.replace('[NAME]', r.firstName);
+      var ok = await sendOne(r.email, genSubject, body, b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
+      if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById('row' + i).classList.add('sent'); }
+      else    { setBdg(i, 'failed', '✗ failed'); document.getElementById('row' + i).classList.add('failed'); }
+      done++;
+      if (done === recipients.length) {
+        document.getElementById('sendBtn').disabled = false;
+        showLine('sendStatus', 'ok', '✓ All scheduled emails sent.');
+      }
     }, at.getTime() - Date.now());
     schedTimers.push(t);
   });
 
-  showLine('sendStatus', 'ok', `✓ Scheduled: ${recipients.length} email${recipients.length > 1 ? 's' : ''} starting ${fmtEST(base)} EST, 1 min apart. Keep this tab open.`);
+  showLine('sendStatus', 'ok', '✓ Scheduled: ' + recipients.length + ' email' + (recipients.length > 1 ? 's' : '') + ' starting ' + fmtEST(base) + ' EST, 1 min apart. Keep this tab open.');
 }
 
-// ── GMAIL REST SEND ───────────────────────────────────
 async function sendOne(to, subject, body, attachB64, attachName, attachMime) {
   try {
-    const mime = buildMIME(to, subject, body, attachB64, attachName, attachMime);
-    const raw  = btoa(unescape(encodeURIComponent(mime))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-    const res  = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+    var mime = buildMIME(to, subject, body, attachB64, attachName, attachMime);
+    var raw  = btoa(unescape(encodeURIComponent(mime))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    var res  = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + gmailToken, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw })
+      body: JSON.stringify({ raw: raw })
     });
     if (res.status === 401) { gmailToken = null; setStatus('gmail', 'err', 'Token expired — reconnect Gmail.'); return false; }
     if (!res.ok) { console.error('Gmail error', res.status, await res.text()); return false; }
-    const d = await res.json();
+    var d = await res.json();
     console.log('✓ Sent to', to, '| id:', d.id);
     return !!d.id;
   } catch (err) { console.error('sendOne error:', err); return false; }
 }
 
-// ── MIME BUILDER ──────────────────────────────────────
 function buildMIME(to, subject, body, attachB64, attachName, attachMime) {
-  const b = 'ot_' + Math.random().toString(36).slice(2, 12);
+  var b = 'ot_' + Math.random().toString(36).slice(2, 12);
   return [
     'MIME-Version: 1.0',
-    `To: ${to}`,
-    `Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
-    `Content-Type: multipart/mixed; boundary="${b}"`,
+    'To: ' + to,
+    'Subject: =?UTF-8?B?' + btoa(unescape(encodeURIComponent(subject))) + '?=',
+    'Content-Type: multipart/mixed; boundary="' + b + '"',
     '',
-    `--${b}`,
+    '--' + b,
     'Content-Type: text/plain; charset="UTF-8"',
     'Content-Transfer-Encoding: base64',
     '',
     btoa(unescape(encodeURIComponent(body))).match(/.{1,76}/g).join('\r\n'),
     '',
-    `--${b}`,
-    `Content-Type: ${attachMime}; name="${attachName}"`,
-    `Content-Disposition: attachment; filename="${attachName}"`,
+    '--' + b,
+    'Content-Type: ' + attachMime + '; name="' + attachName + '"',
+    'Content-Disposition: attachment; filename="' + attachName + '"',
     'Content-Transfer-Encoding: base64',
     '',
     attachB64,
     '',
-    `--${b}--`
+    '--' + b + '--'
   ].join('\r\n');
 }
 
-// ── HELPERS ───────────────────────────────────────────
 function isEDT(d) {
-  const y = d.getFullYear();
-  const start = nthSun(y, 2, 2); // March 2nd Sunday
-  const end   = nthSun(y, 10, 1); // Nov 1st Sunday
-  return d >= start && d < end;
+  var y = d.getFullYear();
+  var s = nthSun(y, 2, 2); var e = nthSun(y, 10, 1);
+  return d >= s && d < e;
 }
 function nthSun(y, m, n) {
-  const d = new Date(y, m, 1);
+  var d = new Date(y, m, 1);
   d.setDate(1 + ((7 - d.getDay()) % 7) + (n - 1) * 7);
   return d;
 }
 function fmtEST(d) {
   try { return d.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }); }
-  catch { return d.toISOString(); }
+  catch(e) { return d.toISOString(); }
 }
 function toB64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result.split(',')[1].match(/.{1,76}/g).join('\r\n'));
+  return new Promise(function(res, rej) {
+    var r = new FileReader();
+    r.onload = function() { res(r.result.split(',')[1].match(/.{1,76}/g).join('\r\n')); };
     r.onerror = rej;
     r.readAsDataURL(file);
   });
 }
 function setBdg(i, cls, txt) {
-  const el = document.getElementById(`bdg${i}`);
+  var el = document.getElementById('bdg' + i);
   if (!el) return;
-  el.className = `bdg bdg-${cls}`; el.textContent = txt;
+  el.className = 'bdg bdg-' + cls; el.textContent = txt;
 }
 function showLine(id, type, msg) {
-  const el = document.getElementById
+  var el = document.getElementById(id);
+  el.className = 'sline show ' + type; el.textContent = msg;
+}
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+</script>
+</body>
+</html>
