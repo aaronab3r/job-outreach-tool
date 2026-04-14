@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outreach Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: #e0dbd0;
+    --border-strong: #c8c0b0;
+    --accent: #1a3a2a;
+    --accent2: #2d6a4a;
+    --accent-light: #e8f4ee;
+    --text: #1a1a16;
+    --text2: #5a5a50;
+    --text3: #9a9a8a;
+    --error: #c0392b;
+    --error-bg: #fdf2f0;
+    --success: #1a6b3a;
+    --success-bg: #edf7f1;
+    --warn: #7a5000;
+    --warn-bg: #fef9ed;
+    --info: #3050b8;
+    --info-bg: #eef2ff;
+    --info-border: #c0ccf8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a09880' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* HEADER */
+  .header {
+    margin-bottom: 44px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .header-left h1 {
+    font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700;
+    color: var(--accent); letter-spacing: -1px; line-height: 1;
+  }
+  .header-left p { font-size: 14px; color: var(--text3); margin-top: 7px; font-style: italic; }
+  .header-badge {
+    background: var(--accent); color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 40px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: var(--shadow);
+    padding: 28px 32px; margin-bottom: 16px;
+    animation: fadeUp 0.35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .step-pill {
+    background: var(--accent); color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.2px; }
+  .card-hint  { font-size: 13px; color: var(--text3); margin-left: auto; font-style: italic; }
+
+  /* SETUP CARD */
+  .setup-card {
+    background: var(--info-bg); border: 1.5px solid var(--info-border);
+    border-radius: 16px; padding: 28px 32px; margin-bottom: 16px;
+  }
+  .setup-card h2 {
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+    color: var(--info); margin-bottom: 18px;
+  }
+  .setup-steps { display: flex; flex-direction: column; gap: 12px; counter-reset: setup; }
+  .setup-step { display: flex; gap: 14px; align-items: flex-start; counter-increment: setup; }
+  .setup-step::before {
+    content: counter(setup);
+    background: var(--info); color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    min-width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .setup-step p { font-size: 13px; color: #2a3a70; line-height: 1.65; }
+  .setup-step code {
+    background: #dde4f8; color: var(--info);
+    font-family: 'Courier New', monospace; font-size: 12px;
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .setup-step a { color: var(--info); font-weight: 500; }
+  .setup-step strong { color: #1a2870; }
+
+  .client-id-row { display: flex; gap: 10px; align-items: stretch; margin-top: 20px; }
+  .client-id-row input {
+    flex: 1; background: #fff; border: 1.5px solid var(--info-border);
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    padding: 11px 16px; border-radius: 10px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .client-id-row input:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(48,80,184,0.12); }
+  .client-id-row input::placeholder { color: var(--text3); font-size: 13px; }
+
+  .auth-status {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-top: 12px;
+    background: var(--surface2); border: 1.5px solid var(--border); color: var(--text2);
+    transition: all 0.2s;
+  }
+  .auth-status.connected { background: var(--success-bg); border-color: #a8d5b8; color: var(--success); }
+  .auth-status.err       { background: var(--error-bg);   border-color: #f0b8b0; color: var(--error); }
+  .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; transition: all 0.2s; }
+  .auth-dot.on  { background: var(--success); box-shadow: 0 0 0 3px rgba(26,107,58,0.2); }
+  .auth-dot.err { background: var(--error); }
+
+  /* LABELS */
+  .field-label {
+    display: block; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px;
+  }
+
+  /* INPUTS */
+  textarea, input[type="datetime-local"] {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    padding: 12px 16px; border-radius: 10px; resize: vertical; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; line-height: 1.6;
+  }
+  textarea:focus, input[type="datetime-local"]:focus {
+    border-color: var(--accent2); background: #fff; box-shadow: 0 0 0 3px rgba(45,106,74,0.10);
+  }
+  textarea::placeholder { color: var(--text3); }
+
+  /* FILE ZONE */
+  .file-zone {
+    background: var(--surface2); border: 2px dashed var(--border-strong);
+    border-radius: 12px; padding: 28px 20px; text-align: center;
+    cursor: pointer; position: relative; transition: all 0.2s;
+  }
+  .file-zone:hover, .file-zone.drag-over { border-color: var(--accent2); background: var(--accent-light); }
+  .file-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .file-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .file-label-text { font-size: 14px; color: var(--text2); }
+  .file-loaded {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--success); margin-top: 6px; display: none;
+    align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; border-radius: 8px; padding: 11px 22px;
+    transition: all 0.15s; letter-spacing: 0.2px;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--accent2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover:not(:disabled) { background: #1f7a42; box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .btn-success:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1.5px solid var(--border-strong); }
+  .btn-ghost:hover { background: var(--surface2); }
+  .btn-info { background: var(--info); color: #fff; }
+  .btn-info:hover:not(:disabled) { background: #3a5fd8; box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .btn-info:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* TOGGLE GROUP */
+  .toggle-group { display: flex; gap: 8px; margin-bottom: 18px; }
+  .btn-toggle {
+    background: var(--surface2); color: var(--text2); border: 1.5px solid var(--border);
+    padding: 9px 20px; border-radius: 8px; font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-toggle.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* CSV ZONE */
+  .csv-zone {
+    background: var(--surface2); border: 2px dashed var(--border-strong);
+    border-radius: 12px; padding: 22px; text-align: center;
+    cursor: pointer; position: relative; transition: all 0.2s;
+  }
+  .csv-zone:hover, .csv-zone.drag-over { border-color: var(--accent2); background: var(--accent-light); }
+  .csv-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+  /* RECIPIENT ROWS */
+  .recipients-list { display: flex; flex-direction: column; gap: 6px; }
+  .recipient-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; font-size: 13px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .recipient-row.sent   { background: var(--success-bg); border-color: #a8d5b8; }
+  .recipient-row.failed { background: var(--error-bg);   border-color: #f0b8b0; }
+  .rec-name  { font-weight: 500; color: var(--text); }
+  .rec-email { color: var(--text3); font-size: 12px; margin-left: 8px; }
+
+  .badge {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.5px; padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+  }
+  .badge-pending   { background: var(--surface); border: 1px solid var(--border); color: var(--text3); }
+  .badge-sending   { background: var(--warn-bg); border: 1px solid #e8c870; color: var(--warn); }
+  .badge-sent      { background: var(--success-bg); border: 1px solid #a8d5b8; color: var(--success); }
+  .badge-failed    { background: var(--error-bg); border: 1px solid #f0b8b0; color: var(--error); }
+  .badge-scheduled { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info); }
+
+  /* PREVIEW */
+  .preview-subject {
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; font-size: 13px; color: var(--text2); margin-bottom: 10px;
+  }
+  .preview-subject strong {
+    font-family: 'Syne', sans-serif; font-weight: 600; color: var(--text);
+    font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; margin-right: 10px;
+  }
+  .preview-body {
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 20px 22px; font-size: 14px;
+    line-height: 1.8; white-space: pre-wrap; color: var(--text); min-height: 160px;
+  }
+
+  /* NOTICE */
+  .notice {
+    background: var(--warn-bg); border: 1.5px solid #e8c870;
+    border-radius: 8px; padding: 12px 16px; font-size: 13px;
+    color: var(--warn); line-height: 1.6; margin-bottom: 16px;
+  }
+
+  /* STATUS */
+  .status-line {
+    font-size: 13px; margin-top: 12px; padding: 10px 14px;
+    border-radius: 8px; display: none; line-height: 1.5;
+  }
+  .status-line.visible { display: block; }
+  .status-line.loading { background: var(--warn-bg); color: var(--warn); }
+  .status-line.ok      { background: var(--success-bg); color: var(--success); }
+  .status-line.err     { background: var(--error-bg); color: var(--error); }
+
+  /* SCHEDULE */
+  .schedule-toggle {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; cursor: pointer; user-select: none;
+  }
+  .schedule-toggle input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent2); cursor: pointer; }
+  .schedule-toggle span { font-size: 14px; color: var(--text2); }
+  .schedule-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px 16px; background: var(--info-bg); border: 1.5px solid var(--info-border);
+    border-radius: 10px; margin-bottom: 16px;
+  }
+  .schedule-row label { font-size: 13px; color: var(--info); font-weight: 500; white-space: nowrap; }
+  .schedule-row input[type="datetime-local"] {
+    flex: 1; min-width: 200px; background: #fff; border-color: var(--info-border); color: var(--info); font-size: 13px;
+  }
+  .schedule-row input[type="datetime-local"]:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(48,80,184,0.12); }
+  .tz-badge {
+    background: var(--info); color: #fff; font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 600px) {
+    .card, .setup-card { padding: 20px 18px; }
+    body { padding: 28px 14px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Outreach Tool</h1>
+      <p>Aaron Aberasturia — job application emailer</p>
+    </div>
+    <div class="header-badge">v4.0</div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="setup-card" id="setupCard">
+    <h2>⚙️ One-Time Google Cloud Setup</h2>
+    <div class="setup-steps">
+      <div class="setup-step">
+        <p>Go to <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> → create a new project (name it anything, e.g. <code>outreach-tool</code>).</p>
+      </div>
+      <div class="setup-step">
+        <p><strong>APIs &amp; Services → Library</strong> → search <strong>Gmail API</strong> → Enable it.</p>
+      </div>
+      <div class="setup-step">
+        <p><strong>APIs &amp; Services → OAuth consent screen</strong> → choose <strong>External</strong> → fill in an app name + your email as support and developer contact → Save and Continue through all steps.</p>
+      </div>
+      <div class="setup-step">
+        <p><strong>APIs &amp; Services → Credentials → Create Credentials → OAuth client ID</strong> → Application type: <strong>Web application</strong>.<br><br>
+        Under <strong>Authorized JavaScript origins</strong> add these two URIs (click <strong>+ ADD URI</strong> for each):<br>
+        <code>https://claude.ai</code><br>
+        <code>https://www.claude.ai</code><br><br>
+        Leave <strong>Authorized redirect URIs</strong> empty. Click <strong>Create</strong> and copy the <strong>Client ID</strong>.</p>
+      </div>
+      <div class="setup-step">
+        <p>Paste the Client ID below and click <strong>Connect Gmail</strong>. A Google sign-in popup will appear — approve it. Done.</p>
+      </div>
+    </div>
+
+    <div class="client-id-row">
+      <input type="text" id="clientIdInput" placeholder="Paste Client ID (ends in .apps.googleusercontent.com)" />
+      <button class="btn btn-info" id="connectBtn" onclick="connectGmail()">Connect Gmail</button>
+    </div>
+    <div class="auth-status" id="authStatus">
+      <span class="auth-dot" id="authDot"></span>
+      <span id="authMsg">Not connected — enter Client ID and click Connect Gmail</span>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-pill">1</div>
+      <div class="card-title">Resume</div>
+      <div class="card-hint">Upload once per session</div>
+    </div>
+    <div class="file-zone" id="fileZone">
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx">
+      <span class="file-icon" id="fileIcon">📄</span>
+      <div class="file-label-text" id="fileLabel">Click or drag your resume here (PDF or DOCX)</div>
+      <div class="file-loaded" id="fileName"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-pill">2</div>
+      <div class="card-title">Job Description</div>
+      <div class="card-hint">Paste the full JD</div>
+    </div>
+    <textarea id="jdInput" rows="7" placeholder="Paste the job description here..."></textarea>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-pill">3</div>
+      <div class="card-title">Recipients</div>
+    </div>
+    <div class="toggle-group">
+      <button class="btn-toggle active" id="toggleManual" onclick="switchMode('manual')">✏️ Manual</button>
+      <button class="btn-toggle" id="toggleCSV" onclick="switchMode('csv')">📋 CSV Import</button>
+    </div>
+    <div id="manualMode">
+      <label class="field-label">One per line — First Last, email@company.com &nbsp;or&nbsp; Firstname, email@company.com</label>
+      <textarea id="recipientsInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
+    </div>
+    <div id="csvMode" style="display:none">
+      <label class="field-label">Apollo CSV — columns: First Name, Email</label>
+      <div class="csv-zone" id="csvZone">
+        <input type="file" id="csvFile" accept=".csv">
+        <span style="font-size:24px;display:block;margin-bottom:8px">📊</span>
+        <div id="csvLabel" class="file-label-text">Click or drag your Apollo CSV here</div>
+        <div class="file-loaded" id="csvFileName"></div>
+      </div>
+    </div>
+    <div class="recipients-list" id="recipientsPreview" style="margin-top:14px"></div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-pill">4</div>
+      <div class="card-title">Generate Email</div>
+    </div>
+    <div class="notice">ℹ️ Preview uses first recipient's name. All emails get the same body — only the greeting changes.</div>
+    <button class="btn btn-primary" id="generateBtn" onclick="generateEmail()">✦ Generate Email</button>
+    <div class="status-line" id="genStatus"></div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="card" id="previewCard" style="display:none">
+    <div class="card-header">
+      <div class="step-pill">5</div>
+      <div class="card-title">Preview</div>
+    </div>
+    <div class="preview-subject"><strong>Subject</strong><span id="subjectPreview"></span></div>
+    <div class="preview-body" id="emailPreview"></div>
+    <div style="margin-top:14px;display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="generateEmail()">↺ Regenerate</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="card" id="sendCard" style="display:none">
+    <div class="card-header">
+      <div class="step-pill">6</div>
+      <div class="card-title">Send</div>
+      <div class="card-hint">via Gmail API</div>
+    </div>
+    <label class="schedule-toggle">
+      <input type="checkbox" id="scheduleCheck" onchange="toggleSchedule()">
+      <span>Schedule for later (optional)</span>
+    </label>
+    <div id="scheduleRow" class="schedule-row" style="display:none">
+      <label>Send at</label>
+      <input type="datetime-local" id="scheduleTime" />
+      <span class="tz-badge">EST</span>
+    </div>
+    <div class="recipients-list" id="recipientsList"></div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-success" id="sendBtn" onclick="sendAll()">
+        <span id="sendBtnLabel">⚡ Send All</span>
+      </button>
+    </div>
+    <div class="status-line" id="sendStatus"></div>
+  </div>
+
+</div>
+
+<script>
+/* ── STATE ── */
+let resumeFile       = null;
+let parsedRecipients = [];
+let generatedSubject = '';
+let generatedBody    = ''; // [NAME] placeholder
+let recipientMode    = 'manual';
+let gAccessToken     = null;
+let gClientId        = '';
+let scheduledTimers  = [];
+let tokenClient      = null;
+
+/* ── OAUTH via Google Identity Services (no redirect URI needed) ── */
+function connectGmail() {
+  const id = document.getElementById('clientIdInput').value.trim();
+  if (!id || !id.includes('.apps.googleusercontent.com')) {
+    setAuthStatus('err', 'Invalid Client ID — it should end in .apps.googleusercontent.com');
+    return;
+  }
+  gClientId = id;
+
+  // Wait for GIS library to load
+  if (typeof google === 'undefined' || !google.accounts) {
+    setAuthStatus('err', 'Google Identity Services not loaded yet — wait a moment and try again.');
+    return;
+  }
+
+  setAuthStatus('loading', 'Opening Google sign-in...');
+
+  // Initialize the token client — this uses a popup, no redirect URI required
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: gClientId,
+    scope: 'https://www.googleapis.com/auth/gmail.send',
+    callback: (response) => {
+      if (response.error) {
+        setAuthStatus('err', 'Auth failed: ' + response.error);
+        return;
+      }
+      gAccessToken = response.access_token;
+      setAuthStatus('connected', '✓ Gmail connected — ready to send');
+      document.getElementById('connectBtn').textContent = '✓ Reconnect';
+    },
+    error_callback: (err) => {
+      setAuthStatus('err', 'Auth error: ' + (err.message || err.type || 'unknown'));
+    }
+  });
+
+  // Request the token — opens a popup, no redirect needed
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function setAuthStatus(state, msg) {
+  const el  = document.getElementById('authStatus');
+  const dot = document.getElementById('authDot');
+  document.getElementById('authMsg').textContent = msg;
+  el.className  = 'auth-status' + (state === 'connected' ? ' connected' : state === 'err' ? ' err' : '');
+  dot.className = 'auth-dot'    + (state === 'connected' ? ' on'        : state === 'err' ? ' err' : '');
+}
+
+/* ── FILE UPLOAD ── */
+const resumeInput = document.getElementById('resumeFile');
+const fileZone    = document.getElementById('fileZone');
+resumeInput.addEventListener('change', e => { if (e.target.files[0]) loadResume(e.target.files[0]); });
+fileZone.addEventListener('dragover', e => { e.preventDefault(); fileZone.classList.add('drag-over'); });
+fileZone.addEventListener('dragleave', () => fileZone.classList.remove('drag-over'));
+fileZone.addEventListener('drop', e => { e.preventDefault(); fileZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) loadResume(e.dataTransfer.files[0]); });
+
+function loadResume(file) {
+  resumeFile = file;
+  document.getElementById('fileIcon').textContent = '✅';
+  document.getElementById('fileLabel').textContent = 'Resume loaded';
+  const fn = document.getElementById('fileName');
+  fn.textContent = '📎 ' + file.name;
+  fn.style.display = 'flex';
+}
+
+/* ── MODE TOGGLE ── */
+function switchMode(mode) {
+  recipientMode = mode;
+  document.getElementById('manualMode').style.display = mode === 'manual' ? 'block' : 'none';
+  document.getElementById('csvMode').style.display    = mode === 'csv'    ? 'block' : 'none';
+  document.getElementById('toggleManual').classList.toggle('active', mode === 'manual');
+  document.getElementById('toggleCSV').classList.toggle('active', mode === 'csv');
+  document.getElementById('recipientsPreview').innerHTML = '';
+  parsedRecipients = [];
+}
+
+/* ── CSV ── */
+const csvInput = document.getElementById('csvFile');
+const csvZone  = document.getElementById('csvZone');
+csvInput.addEventListener('change', e => { if (e.target.files[0]) loadCSV(e.target.files[0]); });
+csvZone.addEventListener('dragover', e => { e.preventDefault(); csvZone.classList.add('drag-over'); });
+csvZone.addEventListener('dragleave', () => csvZone.classList.remove('drag-over'));
+csvZone.addEventListener('drop', e => { e.preventDefault(); csvZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) loadCSV(e.dataTransfer.files[0]); });
+
+function loadCSV(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.trim().split('\n');
+    const header = lines[0].toLowerCase();
+    const dataLines = (header.includes('first') || header.includes('email')) ? lines.slice(1) : lines;
+    const seen = new Set(); const results = []; let dups = 0;
+    for (const line of dataLines) {
+      const parts = line.trim().split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+      const firstName = parts[0] || ''; const email = parts[1] || '';
+      if (!firstName || !email || !email.includes('@')) continue;
+      const key = email.toLowerCase();
+      if (seen.has(key)) { dups++; continue; }
+      seen.add(key);
+      results.push({ firstName, fullName: firstName, email });
+    }
+    parsedRecipients = results;
+    const fn = document.getElementById('csvFileName');
+    fn.textContent = `✅ ${file.name} — ${results.length} loaded${dups ? ` (${dups} dupes removed)` : ''}`;
+    fn.style.display = 'flex';
+    document.getElementById('csvLabel').style.display = 'none';
+    renderRecipientPreview();
+  };
+  reader.readAsText(file);
+}
+
+/* ── PARSE MANUAL ── */
+function parseManual(raw) {
+  const seen = new Set();
+  return raw.trim().split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const comma = line.indexOf(',');
+    if (comma === -1) return null;
+    const namePart = line.slice(0, comma).trim();
+    const email    = line.slice(comma + 1).trim();
+    if (!email.includes('@')) return null;
+    return { firstName: namePart.split(' ')[0], fullName: namePart, email };
+  }).filter(r => {
+    if (!r) return false;
+    const k = r.email.toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+
+function renderRecipientPreview() {
+  const el = document.getElementById('recipientsPreview');
+  if (!parsedRecipients.length) { el.innerHTML = ''; return; }
+  el.innerHTML = parsedRecipients.slice(0, 5).map(r =>
+    `<div class="recipient-row" style="pointer-events:none">
+      <span><span class="rec-name">${r.firstName}</span><span class="rec-email">${r.email}</span></span>
+      <span class="badge badge-pending">ready</span>
+    </div>`
+  ).join('') + (parsedRecipients.length > 5
+    ? `<div style="font-size:12px;color:var(--text3);padding:6px 4px;margin-top:2px">+${parsedRecipients.length - 5} more...</div>` : '');
+}
+
+/* ── GENERATE ── */
+async function generateEmail() {
+  const jd = document.getElementById('jdInput').value.trim();
+  if (recipientMode === 'manual') {
+    const raw = document.getElementById('recipientsInput').value.trim();
+    if (!raw) { showStatus('genStatus', 'err', '⚠ Add at least one recipient.'); return; }
+    parsedRecipients = parseManual(raw);
+  }
+  if (!jd)                      { showStatus('genStatus', 'err', '⚠ Paste a job description first.'); return; }
+  if (!parsedRecipients.length) { showStatus('genStatus', 'err', '⚠ No valid recipients found.'); return; }
+
+  showStatus('genStatus', 'loading', '⟳ Generating email...');
+  document.getElementById('generateBtn').disabled = true;
+
+  const previewName = parsedRecipients[0].firstName;
+  const prompt = `You are helping Aaron Aberasturia write a cold outreach email to a recruiter after applying for a job.
+
+Job description:
+---
+${jd}
+---
+
+Write a SHORT professional cold outreach email. Rules:
+- Greeting: "Hi ${previewName},"
+- Paragraph 1: One sentence — Aaron recently applied for [exact role title] and wanted to reach out. Use the exact role title and company from the JD.
+- Paragraph 2: 1-2 sentences. Aaron is a CS student graduating May 2026. Mention 2-3 specific skills/technologies from the JD. No fluff.
+- Paragraph 3: One sentence on why he's specifically interested — reference something concrete from the JD.
+- End with: "I'd appreciate the opportunity to be considered and would love to connect."
+- Closing:
+Best,
+Aaron Aberasturia
+linkedin.com/in/aaron-aberasturia
+
+No em dashes. No filler. Nothing after the LinkedIn URL.
+Subject: "Application Follow-Up – [Role Title] at [Company]"
+
+Return ONLY valid JSON: {"subject": "...", "body": "..."}`;
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const raw    = (data.content || []).find(b => b.type === 'text')?.text || '';
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+    generatedSubject = parsed.subject;
+    generatedBody    = parsed.body.replace(new RegExp(`Hi ${escRx(previewName)},`, 'g'), 'Hi [NAME],');
+
+    document.getElementById('subjectPreview').textContent = generatedSubject;
+    document.getElementById('emailPreview').textContent   = parsed.body;
+    document.getElementById('previewCard').style.display  = 'block';
+    buildSendList();
+    document.getElementById('sendCard').style.display = 'block';
+    showStatus('genStatus', 'ok', `✓ Email generated for ${parsedRecipients.length} recipient${parsedRecipients.length > 1 ? 's' : ''}.`);
+    document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    showStatus('genStatus', 'err', '⚠ Generation failed: ' + err.message);
+  }
+  document.getElementById('generateBtn').disabled = false;
+}
+
+/* ── SEND LIST ── */
+function buildSendList() {
+  document.getElementById('recipientsList').innerHTML = parsedRecipients.map((r, i) => {
+    const last = r.fullName !== r.firstName ? ' ' + r.fullName.split(' ').slice(1).join(' ') : '';
+    return `<div class="recipient-row" id="row-${i}">
+      <span><span class="rec-name">${r.firstName}${last}</span><span class="rec-email">${r.email}</span></span>
+      <span class="badge badge-pending" id="badge-${i}">pending</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── SCHEDULE TOGGLE ── */
+function toggleSchedule() {
+  const on = document.getElementById('scheduleCheck').checked;
+  document.getElementById('scheduleRow').style.display = on ? 'flex' : 'none';
+  document.getElementById('sendBtnLabel').textContent  = on ? '🕐 Schedule All' : '⚡ Send All';
+}
+
+/* ── SEND ALL ── */
+async function sendAll() {
+  if (!gAccessToken) { showStatus('sendStatus', 'err', '⚠ Connect Gmail first (setup section above).'); return; }
+  if (!resumeFile)   { showStatus('sendStatus', 'err', '⚠ Upload your resume first (step 1).'); return; }
+  if (!generatedBody){ showStatus('sendStatus', 'err', '⚠ Generate the email first (step 4).'); return; }
+
+  const useSchedule = document.getElementById('scheduleCheck').checked;
+  if (useSchedule) {
+    const val = document.getElementById('scheduleTime').value;
+    if (!val) { showStatus('sendStatus', 'err', '⚠ Pick a date and time.'); return; }
+    scheduleEmails(val); return;
+  }
+
+  document.getElementById('sendBtn').disabled = true;
+  showStatus('sendStatus', 'loading', '⟳ Sending...');
+
+  const b64 = await toB64(resumeFile);
+  let sent = 0, failed = 0;
+
+  for (let i = 0; i < parsedRecipients.length; i++) {
+    const r = parsedRecipients[i];
+    setBadge(i, 'sending', '⟳ sending');
+    const ok = await sendOneGmail(r.email, generatedSubject, generatedBody.replace('[NAME]', r.firstName), b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
+    if (ok) { setBadge(i, 'sent', '✓ sent'); document.getElementById(`row-${i}`).classList.add('sent'); sent++; }
+    else     { setBadge(i, 'failed', '✗ failed'); document.getElementById(`row-${i}`).classList.add('failed'); failed++; }
+    if (i < parsedRecipients.length - 1) await sleep(1200);
+  }
+
+  showStatus('sendStatus', failed && !sent ? 'err' : 'ok', `Done — ${sent} sent${failed ? `, ${failed} failed` : ''}.`);
+  document.getElementById('sendBtn').disabled = false;
+}
+
+/* ── SCHEDULE ── */
+function scheduleEmails(localValue) {
+  const isDST      = isEasternDST(new Date(localValue));
+  const estMin     = isDST ? -4 * 60 : -5 * 60;
+  const localDate  = new Date(localValue);
+  const utcMs      = localDate.getTime() - localDate.getTimezoneOffset() * 60000 - estMin * 60000;
+  const sendBase   = new Date(utcMs);
+
+  if (sendBase.getTime() <= Date.now()) { showStatus('sendStatus', 'err', '⚠ Scheduled time is in the past.'); return; }
+
+  scheduledTimers.forEach(clearTimeout);
+  scheduledTimers = [];
+  document.getElementById('sendBtn').disabled = true;
+  let done = 0;
+
+  parsedRecipients.forEach((r, i) => {
+    const sendAt = new Date(sendBase.getTime() + i * 60000);
+    setBadge(i, 'scheduled', '🕐 ' + fmtEST(sendAt));
+    const t = setTimeout(async () => {
+      setBadge(i, 'sending', '⟳ sending');
+      const b64 = await toB64(resumeFile);
+      const ok  = await sendOneGmail(r.email, generatedSubject, generatedBody.replace('[NAME]', r.firstName), b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
+      if (ok) { setBadge(i, 'sent', '✓ sent'); document.getElementById(`row-${i}`).classList.add('sent'); }
+      else     { setBadge(i, 'failed', '✗ failed'); document.getElementById(`row-${i}`).classList.add('failed'); }
+      if (++done === parsedRecipients.length) { document.getElementById('sendBtn').disabled = false; showStatus('sendStatus', 'ok', '✓ All scheduled emails sent.'); }
+    }, sendAt.getTime() - Date.now());
+    scheduledTimers.push(t);
+  });
+
+  showStatus('sendStatus', 'ok', `✓ Scheduled: ${parsedRecipients.length} email${parsedRecipients.length > 1 ? 's' : ''} starting ${fmtEST(sendBase)} EST, 1 min apart. Keep this tab open.`);
+}
+
+/* ── SEND ONE (direct Gmail REST API) ── */
+async function sendOneGmail(to, subject, body, attachB64, attachName, attachMime) {
+  try {
+    const mime    = buildMIME(to, subject, body, attachB64, attachName, attachMime);
+    const encoded = btoa(unescape(encodeURIComponent(mime))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+    const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + gAccessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw: encoded })
+    });
+
+    if (res.status === 401) {
+      gAccessToken = null;
+      setAuthStatus('err', 'Token expired — reconnect Gmail above.');
+      return false;
+    }
+    if (!res.ok) { const e = await res.json().catch(() => ({})); console.error('Gmail error', res.status, e); return false; }
+    const data = await res.json();
+    console.log('✓ Sent to', to, '| id:', data.id);
+    return !!data.id;
+  } catch (err) {
+    console.error('sendOneGmail failed:', err);
+    return false;
+  }
+}
+
+/* ── MIME ── */
+function buildMIME(to, subject, body, attachB64, attachName, attachMime) {
+  const boundary = 'ot_' + Math.random().toString(36).slice(2, 12);
+  return [
+    'MIME-Version: 1.0',
+    `To: ${to}`,
+    `Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/plain; charset="UTF-8"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    btoa(unescape(encodeURIComponent(body))).match(/.{1,76}/g).join('\r\n'),
+    '',
+    `--${boundary}`,
+    `Content-Type: ${attachMime}; name="${attachName}"`,
+    `Content-Disposition: attachment; filename="${attachName}"`,
+    'Content-Transfer-Encoding: base64',
+    '',
+    attachB64,
+    '',
+    `--${boundary}--`
+  ].join('\r\n');
+}
+
+/* ── HELPERS ── */
+function isEasternDST(d) {
+  const y = d.getFullYear();
+  const s = nthSunday(y, 2, 2); const e = nthSunday(y, 10, 1);
+  return d >= s && d < e;
+}
+function nthSunday(y, m, n) {
+  const d = new Date(y, m, 1);
+  d.setDate(1 + ((7 - d.getDay()) % 7) + (n - 1) * 7);
+  return d;
+}
+function fmtEST(d) {
+  try { return d.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }); }
+  catch { return d.toISOString(); }
+}
+function toB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1].match(/.{1,76}/g).join('\r\n'));
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+function setBadge(i, cls, text) {
+  const el = document.getElementById(`badge-${i}`);
+  if (!el) return;
+  el.className = `badge badge-${cls}`; el.textContent = text;
+}
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = `status-line visible ${type}`; el.textContent = msg;
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+</script>
+</body>
+</html>
