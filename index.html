@@ -262,7 +262,7 @@
       <button class="btn-tab" id="tabCSV" onclick="switchMode('csv')">📋 CSV Import</button>
     </div>
     <div id="manualMode">
-      <label class="lbl">One per line — First Last, email@company.com</label>
+      <label class="lbl">One per line — First Last, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8aefe7ebe3e6cae9e5e7faebe4f3a4e9e5e7">[email&#160;protected]</a></label>
       <textarea id="manualInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
     </div>
     <div id="csvMode" style="display:none">
@@ -295,7 +295,7 @@
       <div class="card-title">Preview</div>
     </div>
     <div class="preview-subj"><strong>Subject</strong><span id="subjectText"></span></div>
-    <div class="preview-body" id="bodyText"></div>
+    <textarea class="preview-body" id="bodyText" rows="14" oninput="syncEditedBody()" style="resize:vertical;font-family:'DM Sans',sans-serif;"></textarea>
     <div style="margin-top:14px;display:flex;gap:10px">
       <button class="btn btn-ghost" onclick="generateEmail()">↺ Regenerate</button>
     </div>
@@ -327,7 +327,7 @@
   </div>
 
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 // ── STATE ──────────────────────────────────────────────
 let resumeFile       = null;
 let recipients       = [];
@@ -510,11 +510,16 @@ ${jd}
 
 Write a SHORT professional cold outreach email. Rules:
 - Greeting: "Hi ${name},"
+- Then a blank line
 - Paragraph 1: One sentence — Aaron recently applied for [exact role title] and wanted to reach out. Use the exact role title and company from the JD.
+- Then a blank line
 - Paragraph 2: 1-2 sentences. Aaron is a CS student graduating May 2026. Mention 2-3 specific skills/technologies from the JD. No fluff.
+- Then a blank line
 - Paragraph 3: One sentence on why he's specifically interested — reference something concrete from the JD.
-- End with: "I'd appreciate the opportunity to be considered and would love to connect."
-- Closing (exactly as shown):
+- Then a blank line
+- "I'd appreciate the opportunity to be considered and would love to connect."
+- Then a blank line
+- Closing — these three lines with NO blank lines between them:
 Best,
 Aaron Aberasturia
 linkedin.com/in/aaron-aberasturia
@@ -546,7 +551,10 @@ Return ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": ".
     genBody    = parsed.body.replace(new RegExp(`Hi ${escRx(name)},`, 'g'), 'Hi [NAME],');
 
     document.getElementById('subjectText').textContent = genSubject;
-    document.getElementById('bodyText').textContent    = parsed.body;
+    const ta = document.getElementById('bodyText');
+    ta.value = parsed.body;
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
     document.getElementById('previewCard').style.display = 'block';
     buildSendList();
     document.getElementById('sendCard').style.display = 'block';
@@ -557,6 +565,14 @@ Return ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": ".
     console.error(err);
   }
   document.getElementById('generateBtn').disabled = false;
+}
+
+// ── SYNC EDITS BACK TO genBody ────────────────────────
+function syncEditedBody() {
+  const ta = document.getElementById('bodyText');
+  const firstName = recipients[0]?.firstName || '';
+  // re-derive genBody with [NAME] placeholder from whatever is in the textarea
+  genBody = ta.value.replace(new RegExp(`Hi ${escRx(firstName)},`, 'g'), 'Hi [NAME],');
 }
 
 // ── SEND LIST ─────────────────────────────────────────
@@ -711,11 +727,4 @@ function setBdg(i, cls, txt) {
   el.className = `bdg bdg-${cls}`; el.textContent = txt;
 }
 function showLine(id, type, msg) {
-  const el = document.getElementById(id);
-  el.className = `sline show ${type}`; el.textContent = msg;
-}
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-</script>
-</body>
-</html>
+  const el = document.getElementById
