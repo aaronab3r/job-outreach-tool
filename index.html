@@ -220,7 +220,7 @@
       <button class="btn-tab" id="tabCSV" onclick="switchMode('csv')">📋 CSV Import</button>
     </div>
     <div id="manualMode">
-      <label class="lbl">One per line — First Last, email@company.com</label>
+      <label class="lbl">One per line — First Last, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4c1c9c5cdc8e4c7cbc9d4c5cadd8ac7cbc9">[email&#160;protected]</a></label>
       <textarea class="field-input" id="manualInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
     </div>
     <div id="csvMode" style="display:none">
@@ -252,7 +252,7 @@
       <div class="step-num">5</div>
       <div class="card-title">Preview <span style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text3);margin-left:6px">— editable</span></div>
     </div>
-    <div class="preview-subj"><strong>Subject</strong><span id="subjectText"></span></div>
+    <div class="preview-subj" style="display:flex;align-items:center;gap:10px"><strong style="white-space:nowrap">Subject</strong><input type="text" id="subjectText" style="flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);padding:0;" oninput="genSubject=this.value"></div>
     <textarea class="preview-body" id="bodyText" spellcheck="true"></textarea>
     <div style="margin-top:14px;display:flex;gap:10px">
       <button class="btn btn-ghost" onclick="generateEmail()">↺ Regenerate</button>
@@ -285,7 +285,7 @@
   </div>
 
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 var resumeFile  = null;
 var recipients  = [];
 var genSubject  = '';
@@ -449,7 +449,7 @@ async function generateEmail() {
   document.getElementById('generateBtn').disabled = true;
 
   var name = recipients[0].firstName;
-  var prompt = 'You are helping Aaron Aberasturia write a cold outreach email to a recruiter after applying for a job.\n\nJob description:\n---\n' + jd + '\n---\n\nWrite a SHORT professional cold outreach email with this exact structure and spacing:\n\nLine 1: "Hi ' + name + ',"\nBlank line\nParagraph 1: One sentence — Aaron recently applied for [exact role title] at [company] and wanted to reach out.\nBlank line\nParagraph 2: 1-2 sentences. Aaron is a CS student graduating May 2026. Mention 2-3 specific skills/technologies from the JD. No fluff.\nBlank line\nParagraph 3: One sentence on why he is specifically interested — reference something concrete from the JD.\nBlank line\n"I\'d appreciate the opportunity to be considered and would love to connect."\nBlank line\nThen these 3 lines with NO blank lines between them:\nBest,\nAaron Aberasturia\nlinkedin.com/in/aaron-aberasturia\n\nRules: No em dashes. No filler phrases. Nothing after the LinkedIn URL.\nSubject line: "Application Follow-Up – [Role Title] at [Company]"\n\nReturn ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}';
+  var prompt = 'You are writing a cold outreach email FROM Aaron Aberasturia (the sender) TO a recruiter. Write in FIRST PERSON — use "I", "I\'m", "my" throughout. Never use third person (never say "Aaron" inside the email body).\n\nAaron\'s background: Computer Science student graduating May 2026. His skills include: Python, JavaScript, TypeScript, C#, Java, SQL, C++, C, PHP, HTML, CSS, JSON, R, React, Node.js, Angular, Next.js, Spring Boot, TensorFlow, EF Core, ASP.NET Core, Microsoft Azure, AWS, CI/CD, RESTful APIs, Swagger, Git, GitHub, MySQL, MongoDB, Google Cloud, Postman, GraphQL, Linux, Shell Scripts, Windows, macOS, Pandas, NumPy, Matplotlib, Agile, Scrum, ETL.\n\nJob description:\n---\n' + jd + '\n---\n\nWrite the email with this EXACT structure (blank lines between each section as shown):\n\n"Hi ' + name + ',"\n\n"I recently applied for the [exact role title] at [company] and wanted to reach out."\n\n[1-2 sentences starting with "I\'m a Computer Science student graduating May 2026" — then mention 2-3 of Aaron\'s skills that DIRECTLY match what the JD is asking for. Be specific to the JD.]\n\n["I\'m especially interested in this role\'s focus on [something specific and concrete from the JD]." — do NOT use "I\'d appreciate" in this sentence.]\n\n"I\'d appreciate the opportunity to be considered and would love to connect."\n\n[blank line here]\nBest,\nAaron Aberasturia\nlinkedin.com/in/aaron-aberasturia\n\nRules: First person only. No em dashes. No filler phrases like "strong fundamentals" or "passionate". No text after the LinkedIn URL. The 3 closing lines (Best / name / LinkedIn) must have NO blank lines between them.\nSubject line: "Application Follow-Up – [exact role title] at [exact company name]"\n\nReturn ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}';
 
   try {
     var res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -472,7 +472,7 @@ async function generateEmail() {
     genSubject = parsed.subject;
     genBody    = parsed.body.replace(new RegExp('Hi ' + escRx(name) + ',', 'g'), 'Hi [NAME],');
 
-    document.getElementById('subjectText').textContent = genSubject;
+    document.getElementById('subjectText').value = genSubject;
     var ta = document.getElementById('bodyText');
     ta.value = parsed.body;
     ta.style.height = 'auto';
@@ -640,10 +640,4 @@ function setBdg(i, cls, txt) {
 }
 function showLine(id, type, msg) {
   var el = document.getElementById(id);
-  el.className = 'sline show ' + type; el.textContent = msg;
-}
-function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
-function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-</script>
-</body>
-</html>
+  el.c
