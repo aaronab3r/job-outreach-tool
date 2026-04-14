@@ -144,18 +144,18 @@
       <h1>Outreach Tool</h1>
       <p>Aaron Aberasturia — job application emailer</p>
     </div>
-    <div class="badge-pill">v5.1</div>
+    <div class="badge-pill">v5.2</div>
   </div>
 
   <!-- SETUP -->
   <div class="setup-card">
-    <h2>⚙️ One-Time Setup</h2>
+    <h2>&#9881;&#65039; One-Time Setup</h2>
     <div class="setup-steps">
       <div class="setup-step">
-        <p>Go to <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> → create a project → enable the <strong>Gmail API</strong> → create an <strong>OAuth client ID</strong> (Web application) with <code>https://yourusername.github.io</code> as an Authorized JavaScript Origin → add your Gmail as a test user under OAuth consent screen.</p>
+        <p>Go to <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> &#8594; create a project &#8594; enable the <strong>Gmail API</strong> &#8594; create an <strong>OAuth client ID</strong> (Web application) with <code>https://yourusername.github.io</code> as an Authorized JavaScript Origin &#8594; add your Gmail as a test user under OAuth consent screen.</p>
       </div>
       <div class="setup-step">
-        <p>Go to <a href="https://console.groq.com/" target="_blank">console.groq.com</a> → sign up free → create an API key.</p>
+        <p>Go to <a href="https://console.groq.com/" target="_blank">console.groq.com</a> &#8594; sign up free &#8594; create an API key.</p>
       </div>
     </div>
 
@@ -193,7 +193,7 @@
     </div>
     <div class="file-zone" id="resumeZone">
       <input type="file" id="resumeInput" accept=".pdf,.doc,.docx">
-      <span class="file-icon" id="resumeIcon">📄</span>
+      <span class="file-icon" id="resumeIcon">&#128196;</span>
       <div id="resumeLabel" style="font-size:14px;color:var(--text2)">Click or drag your resume here (PDF or DOCX)</div>
       <div class="file-name" id="resumeName"></div>
     </div>
@@ -216,18 +216,18 @@
       <div class="card-title">Recipients</div>
     </div>
     <div class="toggle-group">
-      <button class="btn-tab active" id="tabManual" onclick="switchMode('manual')">✏️ Manual</button>
-      <button class="btn-tab" id="tabCSV" onclick="switchMode('csv')">📋 CSV Import</button>
+      <button class="btn-tab active" id="tabManual" onclick="switchMode('manual')">&#9999;&#65039; Manual</button>
+      <button class="btn-tab" id="tabCSV" onclick="switchMode('csv')">&#128203; CSV Import</button>
     </div>
     <div id="manualMode">
-      <label class="lbl">One per line — First Last, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4c1c9c5cdc8e4c7cbc9d4c5cadd8ac7cbc9">[email&#160;protected]</a></label>
-      <textarea class="field-input" id="manualInput" rows="6" placeholder="Tori Smith, tori@company.com&#10;John, john@company.com"></textarea>
+      <label class="lbl" id="manualLbl">One per line</label>
+      <textarea class="field-input" id="manualInput" rows="6"></textarea>
     </div>
     <div id="csvMode" style="display:none">
-      <label class="lbl">Apollo CSV — columns: First Name, Email</label>
+      <label class="lbl">Apollo CSV &#8212; columns: First Name, Email</label>
       <div class="csv-zone" id="csvZone">
         <input type="file" id="csvInput" accept=".csv">
-        <span style="font-size:24px;display:block;margin-bottom:8px">📊</span>
+        <span style="font-size:24px;display:block;margin-bottom:8px">&#128202;</span>
         <div id="csvLabel" style="font-size:14px;color:var(--text2)">Click or drag your Apollo CSV here</div>
         <div class="file-name" id="csvName"></div>
       </div>
@@ -241,8 +241,8 @@
       <div class="step-num">4</div>
       <div class="card-title">Generate Email</div>
     </div>
-    <div class="notice">ℹ️ Preview uses first recipient's name. All emails get the same body — only the greeting changes.</div>
-    <button class="btn btn-green" id="generateBtn" onclick="generateEmail()">✦ Generate Email</button>
+    <div class="notice">&#8505;&#65039; Preview uses first recipient's name. All emails get the same body &#8212; only the greeting changes.</div>
+    <button class="btn btn-green" id="generateBtn" onclick="generateEmail()">&#10022; Generate Email</button>
     <div class="sline" id="genStatus"></div>
   </div>
 
@@ -250,12 +250,15 @@
   <div class="card" id="previewCard" style="display:none">
     <div class="card-header">
       <div class="step-num">5</div>
-      <div class="card-title">Preview <span style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text3);margin-left:6px">— editable</span></div>
+      <div class="card-title">Preview <span style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text3);margin-left:6px">&#8212; editable</span></div>
     </div>
-    <div class="preview-subj" style="display:flex;align-items:center;gap:10px"><strong style="white-space:nowrap">Subject</strong><input type="text" id="subjectText" style="flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);padding:0;" oninput="genSubject=this.value"></div>
+    <div class="preview-subj" style="display:flex;align-items:center;gap:10px">
+      <strong style="white-space:nowrap">Subject</strong>
+      <input type="text" id="subjectText" style="flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);padding:0;" oninput="genSubject=this.value">
+    </div>
     <textarea class="preview-body" id="bodyText" spellcheck="true"></textarea>
     <div style="margin-top:14px;display:flex;gap:10px">
-      <button class="btn btn-ghost" onclick="generateEmail()">↺ Regenerate</button>
+      <button class="btn btn-ghost" onclick="generateEmail()">&#8635; Regenerate</button>
     </div>
   </div>
 
@@ -278,14 +281,14 @@
     <div class="rec-list" id="sendList"></div>
     <div style="margin-top:18px">
       <button class="btn btn-send" id="sendBtn" onclick="sendAll()">
-        <span id="sendLabel">⚡ Send All</span>
+        <span id="sendLabel">&#9889; Send All</span>
       </button>
     </div>
     <div class="sline" id="sendStatus"></div>
   </div>
 
 </div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 var resumeFile  = null;
 var recipients  = [];
 var genSubject  = '';
@@ -297,6 +300,10 @@ var tokenClient = null;
 var schedTimers = [];
 
 window.addEventListener('DOMContentLoaded', function() {
+  // Set placeholder text via JS so Cloudflare can't obfuscate the @ symbol
+  document.getElementById('manualInput').placeholder = 'Tori Smith, tori@company.com\nJohn, john@company.com';
+  document.getElementById('manualLbl').textContent   = 'One per line \u2014 First Last, email@company.com';
+
   var rZone  = document.getElementById('resumeZone');
   var rInput = document.getElementById('resumeInput');
   rInput.addEventListener('change', function(e) { if (e.target.files[0]) setResume(e.target.files[0]); });
@@ -321,11 +328,11 @@ window.addEventListener('DOMContentLoaded', function() {
 function connectGmail() {
   var id = document.getElementById('clientIdInput').value.trim();
   if (!id || !id.includes('.apps.googleusercontent.com')) {
-    setStatus('gmail', 'err', '⚠ Invalid Client ID');
+    setStatus('gmail', 'err', '\u26a0 Invalid Client ID');
     return;
   }
   if (typeof google === 'undefined' || !google.accounts) {
-    setStatus('gmail', 'err', '⚠ Google script not loaded yet — wait a moment and try again');
+    setStatus('gmail', 'err', '\u26a0 Google script not loaded yet \u2014 wait a moment and try again');
     return;
   }
   setStatus('gmail', 'loading', 'Opening Google sign-in...');
@@ -335,8 +342,8 @@ function connectGmail() {
     callback: function(r) {
       if (r.error) { setStatus('gmail', 'err', 'Auth failed: ' + r.error); return; }
       gmailToken = r.access_token;
-      setStatus('gmail', 'ok', '✓ Gmail connected — ready to send');
-      document.getElementById('connectBtn').textContent = '✓ Reconnect';
+      setStatus('gmail', 'ok', '\u2713 Gmail connected \u2014 ready to send');
+      document.getElementById('connectBtn').textContent = '\u2713 Reconnect';
     },
     error_callback: function(e) { setStatus('gmail', 'err', 'Error: ' + (e.message || e.type || 'unknown')); }
   });
@@ -346,11 +353,11 @@ function connectGmail() {
 function saveGroqKey() {
   var key = document.getElementById('groqKeyInput').value.trim();
   if (!key || !key.startsWith('gsk_')) {
-    setStatus('groq', 'err', '⚠ Invalid key — should start with gsk_');
+    setStatus('groq', 'err', '\u26a0 Invalid key \u2014 should start with gsk_');
     return;
   }
   groqKey = key;
-  setStatus('groq', 'ok', '✓ Groq key saved — email generation ready');
+  setStatus('groq', 'ok', '\u2713 Groq key saved \u2014 email generation ready');
 }
 
 function setStatus(which, state, msg) {
@@ -364,10 +371,10 @@ function setStatus(which, state, msg) {
 
 function setResume(file) {
   resumeFile = file;
-  document.getElementById('resumeIcon').textContent = '✅';
+  document.getElementById('resumeIcon').textContent = '\u2705';
   document.getElementById('resumeLabel').textContent = 'Resume loaded';
   var n = document.getElementById('resumeName');
-  n.textContent = '📎 ' + file.name;
+  n.textContent = '\ud83d\udcce ' + file.name;
   n.style.display = 'block';
 }
 
@@ -399,7 +406,7 @@ function loadCSV(file) {
     }
     recipients = out;
     var n = document.getElementById('csvName');
-    n.textContent = '✅ ' + file.name + ' — ' + out.length + ' loaded' + (dups ? ' (' + dups + ' dupes removed)' : '');
+    n.textContent = '\u2705 ' + file.name + ' \u2014 ' + out.length + ' loaded' + (dups ? ' (' + dups + ' dupes removed)' : '');
     n.style.display = 'block';
     document.getElementById('csvLabel').style.display = 'none';
     renderPreview();
@@ -438,18 +445,18 @@ async function generateEmail() {
   var jd = document.getElementById('jdInput').value.trim();
   if (mode === 'manual') {
     var raw = document.getElementById('manualInput').value.trim();
-    if (!raw) { showLine('genStatus', 'err', '⚠ Add at least one recipient.'); return; }
+    if (!raw) { showLine('genStatus', 'err', '\u26a0 Add at least one recipient.'); return; }
     recipients = parseManual(raw);
   }
-  if (!jd)                { showLine('genStatus', 'err', '⚠ Paste a job description first.'); return; }
-  if (!recipients.length) { showLine('genStatus', 'err', '⚠ No valid recipients found.'); return; }
-  if (!groqKey)           { showLine('genStatus', 'err', '⚠ Save your Groq API key in the setup section above.'); return; }
+  if (!jd)                { showLine('genStatus', 'err', '\u26a0 Paste a job description first.'); return; }
+  if (!recipients.length) { showLine('genStatus', 'err', '\u26a0 No valid recipients found.'); return; }
+  if (!groqKey)           { showLine('genStatus', 'err', '\u26a0 Save your Groq API key in the setup section above.'); return; }
 
-  showLine('genStatus', 'loading', '⟳ Generating email...');
+  showLine('genStatus', 'loading', '\u27f3 Generating email...');
   document.getElementById('generateBtn').disabled = true;
 
   var name = recipients[0].firstName;
-  var prompt = 'You are writing a cold outreach email FROM Aaron Aberasturia (the sender) TO a recruiter. Write in FIRST PERSON — use "I", "I\'m", "my" throughout. Never use third person (never say "Aaron" inside the email body).\n\nAaron\'s background: Computer Science student graduating May 2026. His skills include: Python, JavaScript, TypeScript, C#, Java, SQL, C++, C, PHP, HTML, CSS, JSON, R, React, Node.js, Angular, Next.js, Spring Boot, TensorFlow, EF Core, ASP.NET Core, Microsoft Azure, AWS, CI/CD, RESTful APIs, Swagger, Git, GitHub, MySQL, MongoDB, Google Cloud, Postman, GraphQL, Linux, Shell Scripts, Windows, macOS, Pandas, NumPy, Matplotlib, Agile, Scrum, ETL.\n\nJob description:\n---\n' + jd + '\n---\n\nWrite the email with this EXACT structure (blank lines between each section as shown):\n\n"Hi ' + name + ',"\n\n"I recently applied for the [exact role title] at [company] and wanted to reach out."\n\n[1-2 sentences starting with "I\'m a Computer Science student graduating May 2026" — then mention 2-3 of Aaron\'s skills that DIRECTLY match what the JD is asking for. Be specific to the JD.]\n\n["I\'m especially interested in this role\'s focus on [something specific and concrete from the JD]." — do NOT use "I\'d appreciate" in this sentence.]\n\n"I\'d appreciate the opportunity to be considered and would love to connect."\n\n[blank line here]\nBest,\nAaron Aberasturia\nlinkedin.com/in/aaron-aberasturia\n\nRules: First person only. No em dashes. No filler phrases like "strong fundamentals" or "passionate". No text after the LinkedIn URL. The 3 closing lines (Best / name / LinkedIn) must have NO blank lines between them.\nSubject line: "Application Follow-Up – [exact role title] at [exact company name]"\n\nReturn ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}';
+  var prompt = 'You are writing a cold outreach email FROM Aaron Aberasturia (the sender) TO a recruiter. Write in FIRST PERSON \u2014 use "I", "I\'m", "my" throughout. Never use third person (never say "Aaron" inside the email body).\n\nAaron\'s background: Computer Science student graduating May 2026. His skills include: Python, JavaScript, TypeScript, C#, Java, SQL, C++, C, PHP, HTML, CSS, JSON, R, React, Node.js, Angular, Next.js, Spring Boot, TensorFlow, EF Core, ASP.NET Core, Microsoft Azure, AWS, CI/CD, RESTful APIs, Swagger, Git, GitHub, MySQL, MongoDB, Google Cloud, Postman, GraphQL, Linux, Shell Scripts, Windows, macOS, Pandas, NumPy, Matplotlib, Agile, Scrum, ETL.\n\nJob description:\n---\n' + jd + '\n---\n\nWrite the email with this EXACT structure (blank lines between each section as shown):\n\n"Hi ' + name + ',"\n\n"I recently applied for the [exact role title] at [company] and wanted to reach out."\n\n[1-2 sentences starting with "I\'m a Computer Science student graduating May 2026" \u2014 then mention 2-3 of Aaron\'s skills that DIRECTLY match what the JD is asking for. Be specific to the JD.]\n\n["I\'m especially interested in this role\'s focus on [something specific and concrete from the JD]." \u2014 do NOT use "I\'d appreciate" in this sentence.]\n\n"I\'d appreciate the opportunity to be considered and would love to connect."\n\n[blank line here]\nBest,\nAaron Aberasturia\nlinkedin.com/in/aaron-aberasturia\n\nRules: First person only. No em dashes. No filler phrases like "strong fundamentals" or "passionate". No text after the LinkedIn URL. The 3 closing lines (Best / name / LinkedIn) must have NO blank lines between them.\nSubject line: "Application Follow-Up \u2013 [exact role title] at [exact company name]"\n\nReturn ONLY valid JSON, no markdown, no backticks: {"subject": "...", "body": "..."}';
 
   try {
     var res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -459,7 +466,7 @@ async function generateEmail() {
         model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
         messages: [
-          { role: 'system', content: 'You are an email writing assistant. Always respond with only valid JSON — no markdown, no backticks, no explanation.' },
+          { role: 'system', content: 'You are an email writing assistant. Always respond with only valid JSON \u2014 no markdown, no backticks, no explanation.' },
           { role: 'user', content: prompt }
         ]
       })
@@ -481,10 +488,10 @@ async function generateEmail() {
     document.getElementById('previewCard').style.display = 'block';
     buildSendList();
     document.getElementById('sendCard').style.display = 'block';
-    showLine('genStatus', 'ok', '✓ Email generated for ' + recipients.length + ' recipient' + (recipients.length > 1 ? 's' : '') + '.');
+    showLine('genStatus', 'ok', '\u2713 Email generated for ' + recipients.length + ' recipient' + (recipients.length > 1 ? 's' : '') + '.');
     document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
-    showLine('genStatus', 'err', '⚠ Generation failed: ' + err.message);
+    showLine('genStatus', 'err', '\u26a0 Generation failed: ' + err.message);
     console.error(err);
   }
   document.getElementById('generateBtn').disabled = false;
@@ -501,36 +508,36 @@ function buildSendList() {
 function toggleSched() {
   var on = document.getElementById('schedCheck').checked;
   document.getElementById('schedRow').style.display = on ? 'flex' : 'none';
-  document.getElementById('sendLabel').textContent  = on ? '🕐 Schedule All' : '⚡ Send All';
+  document.getElementById('sendLabel').textContent  = on ? '\ud83d\udd50 Schedule All' : '\u26a1 Send All';
 }
 
 async function sendAll() {
-  if (!gmailToken)   { showLine('sendStatus', 'err', '⚠ Connect Gmail first (setup above).'); return; }
-  if (!resumeFile)   { showLine('sendStatus', 'err', '⚠ Upload your resume first (step 1).'); return; }
-  if (!genBody)      { showLine('sendStatus', 'err', '⚠ Generate the email first (step 4).'); return; }
+  if (!gmailToken)   { showLine('sendStatus', 'err', '\u26a0 Connect Gmail first (setup above).'); return; }
+  if (!resumeFile)   { showLine('sendStatus', 'err', '\u26a0 Upload your resume first (step 1).'); return; }
+  if (!genBody)      { showLine('sendStatus', 'err', '\u26a0 Generate the email first (step 4).'); return; }
 
   if (document.getElementById('schedCheck').checked) {
     var val = document.getElementById('schedTime').value;
-    if (!val) { showLine('sendStatus', 'err', '⚠ Pick a date and time.'); return; }
+    if (!val) { showLine('sendStatus', 'err', '\u26a0 Pick a date and time.'); return; }
     doSchedule(val); return;
   }
 
   document.getElementById('sendBtn').disabled = true;
-  showLine('sendStatus', 'loading', '⟳ Sending...');
+  showLine('sendStatus', 'loading', '\u27f3 Sending...');
   var b64 = await toB64(resumeFile);
   var sent = 0; var failed = 0;
 
   for (var i = 0; i < recipients.length; i++) {
     var r = recipients[i];
-    setBdg(i, 'sending', '⟳ sending');
+    setBdg(i, 'sending', '\u27f3 sending');
     var body = genBody.replace('[NAME]', r.firstName);
     var ok = await sendOne(r.email, genSubject, body, b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
-    if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById('row' + i).classList.add('sent'); sent++; }
-    else    { setBdg(i, 'failed', '✗ failed'); document.getElementById('row' + i).classList.add('failed'); failed++; }
+    if (ok) { setBdg(i, 'sent', '\u2713 sent'); document.getElementById('row' + i).classList.add('sent'); sent++; }
+    else    { setBdg(i, 'failed', '\u2717 failed'); document.getElementById('row' + i).classList.add('failed'); failed++; }
     if (i < recipients.length - 1) await sleep(1200);
   }
 
-  showLine('sendStatus', (failed && !sent) ? 'err' : 'ok', 'Done — ' + sent + ' sent' + (failed ? ', ' + failed + ' failed' : '') + '.');
+  showLine('sendStatus', (failed && !sent) ? 'err' : 'ok', 'Done \u2014 ' + sent + ' sent' + (failed ? ', ' + failed + ' failed' : '') + '.');
   document.getElementById('sendBtn').disabled = false;
 }
 
@@ -540,7 +547,7 @@ function doSchedule(localVal) {
   var ld     = new Date(localVal);
   var utcMs  = ld.getTime() - ld.getTimezoneOffset() * 60000 - estMin * 60000;
   var base   = new Date(utcMs);
-  if (base.getTime() <= Date.now()) { showLine('sendStatus', 'err', '⚠ Scheduled time is in the past.'); return; }
+  if (base.getTime() <= Date.now()) { showLine('sendStatus', 'err', '\u26a0 Scheduled time is in the past.'); return; }
 
   schedTimers.forEach(function(t) { clearTimeout(t); });
   schedTimers = [];
@@ -549,24 +556,24 @@ function doSchedule(localVal) {
 
   recipients.forEach(function(r, i) {
     var at = new Date(base.getTime() + i * 60000);
-    setBdg(i, 'scheduled', '🕐 ' + fmtEST(at));
+    setBdg(i, 'scheduled', '\ud83d\udd50 ' + fmtEST(at));
     var t = setTimeout(async function() {
-      setBdg(i, 'sending', '⟳ sending');
+      setBdg(i, 'sending', '\u27f3 sending');
       var b64 = await toB64(resumeFile);
       var body = genBody.replace('[NAME]', r.firstName);
       var ok = await sendOne(r.email, genSubject, body, b64, resumeFile.name, resumeFile.type || 'application/octet-stream');
-      if (ok) { setBdg(i, 'sent', '✓ sent'); document.getElementById('row' + i).classList.add('sent'); }
-      else    { setBdg(i, 'failed', '✗ failed'); document.getElementById('row' + i).classList.add('failed'); }
+      if (ok) { setBdg(i, 'sent', '\u2713 sent'); document.getElementById('row' + i).classList.add('sent'); }
+      else    { setBdg(i, 'failed', '\u2717 failed'); document.getElementById('row' + i).classList.add('failed'); }
       done++;
       if (done === recipients.length) {
         document.getElementById('sendBtn').disabled = false;
-        showLine('sendStatus', 'ok', '✓ All scheduled emails sent.');
+        showLine('sendStatus', 'ok', '\u2713 All scheduled emails sent.');
       }
     }, at.getTime() - Date.now());
     schedTimers.push(t);
   });
 
-  showLine('sendStatus', 'ok', '✓ Scheduled: ' + recipients.length + ' email' + (recipients.length > 1 ? 's' : '') + ' starting ' + fmtEST(base) + ' EST, 1 min apart. Keep this tab open.');
+  showLine('sendStatus', 'ok', '\u2713 Scheduled: ' + recipients.length + ' email' + (recipients.length > 1 ? 's' : '') + ' starting ' + fmtEST(base) + ' EST, 1 min apart. Keep this tab open.');
 }
 
 async function sendOne(to, subject, body, attachB64, attachName, attachMime) {
@@ -578,10 +585,10 @@ async function sendOne(to, subject, body, attachB64, attachName, attachMime) {
       headers: { 'Authorization': 'Bearer ' + gmailToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ raw: raw })
     });
-    if (res.status === 401) { gmailToken = null; setStatus('gmail', 'err', 'Token expired — reconnect Gmail.'); return false; }
+    if (res.status === 401) { gmailToken = null; setStatus('gmail', 'err', 'Token expired \u2014 reconnect Gmail.'); return false; }
     if (!res.ok) { console.error('Gmail error', res.status, await res.text()); return false; }
     var d = await res.json();
-    console.log('✓ Sent to', to, '| id:', d.id);
+    console.log('\u2713 Sent to', to, '| id:', d.id);
     return !!d.id;
   } catch (err) { console.error('sendOne error:', err); return false; }
 }
@@ -640,4 +647,10 @@ function setBdg(i, cls, txt) {
 }
 function showLine(id, type, msg) {
   var el = document.getElementById(id);
-  el.c
+  el.className = 'sline show ' + type; el.textContent = msg;
+}
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+function escRx(s)  { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+</script>
+</body>
+</html>
